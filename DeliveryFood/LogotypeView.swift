@@ -16,6 +16,7 @@ struct LogotypeView: View {
             
             Text("Deli")
                 .font(.custom("Vetka", size: size))
+                .kerning(10)
                 .background {
                     if isLeafNeeded {
                         HStack {
