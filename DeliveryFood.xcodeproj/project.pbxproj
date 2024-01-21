@@ -41,6 +41,7 @@
 		689B12E02B5BD72D00F7FB7B /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689B12DF2B5BD72D00F7FB7B /* HomeViewModel.swift */; };
 		689B12E22B5BD9E700F7FB7B /* FirebaseStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689B12E12B5BD9E700F7FB7B /* FirebaseStorageManager.swift */; };
 		689B12E52B5BE2ED00F7FB7B /* CategoryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689B12E42B5BE2ED00F7FB7B /* CategoryModel.swift */; };
+		68B930452B5C4263002D28E2 /* FeaturedByCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B930442B5C4263002D28E2 /* FeaturedByCategoryView.swift */; };
 		68C291D92B5916360050BC4A /* DeliveryFoodApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68C291D82B5916360050BC4A /* DeliveryFoodApp.swift */; };
 		68C291DB2B5916360050BC4A /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68C291DA2B5916360050BC4A /* HomeView.swift */; };
 		68C291DD2B5916370050BC4A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 68C291DC2B5916370050BC4A /* Assets.xcassets */; };
@@ -57,6 +58,7 @@
 		689B12DF2B5BD72D00F7FB7B /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		689B12E12B5BD9E700F7FB7B /* FirebaseStorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseStorageManager.swift; sourceTree = "<group>"; };
 		689B12E42B5BE2ED00F7FB7B /* CategoryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryModel.swift; sourceTree = "<group>"; };
+		68B930442B5C4263002D28E2 /* FeaturedByCategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeaturedByCategoryView.swift; sourceTree = "<group>"; };
 		68C291D52B5916360050BC4A /* DeliveryFood.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DeliveryFood.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		68C291D82B5916360050BC4A /* DeliveryFoodApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeliveryFoodApp.swift; sourceTree = "<group>"; };
 		68C291DA2B5916360050BC4A /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
@@ -143,6 +145,7 @@
 			isa = PBXGroup;
 			children = (
 				689B129D2B5BC38C00F7FB7B /* CategoryView.swift */,
+				68B930442B5C4263002D28E2 /* FeaturedByCategoryView.swift */,
 			);
 			path = Subviews;
 			sourceTree = "<group>";
@@ -315,6 +318,7 @@
 				689B12E52B5BE2ED00F7FB7B /* CategoryModel.swift in Sources */,
 				689B12E22B5BD9E700F7FB7B /* FirebaseStorageManager.swift in Sources */,
 				68C291EB2B5917FE0050BC4A /* LogotypeView.swift in Sources */,
+				68B930452B5C4263002D28E2 /* FeaturedByCategoryView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

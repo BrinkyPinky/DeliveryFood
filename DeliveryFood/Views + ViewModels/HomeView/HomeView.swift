@@ -45,6 +45,18 @@ struct HomeView: View {
             }
             .frame(height: 190)
             
+            VStack {
+                HStack {
+                    Text("Grab & Go")
+                        .bold()
+                        .font(.system(size: 24))
+                    Spacer()
+                }
+                FeaturedByCategoryView()
+            }
+            .padding(.top, 16)
+            .padding([.leading, .trailing], 32)
+            
             Spacer()
         }
         .onAppear {
