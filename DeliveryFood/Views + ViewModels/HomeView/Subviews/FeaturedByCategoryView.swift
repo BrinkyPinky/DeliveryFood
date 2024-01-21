@@ -16,19 +16,15 @@ struct FeaturedByCategoryView: View {
                 .frame(height: 175)
                 .overlay {
                     HStack {
-                        VStack {
-                            HStack {
-                                Text("Primavera Pizza")
-                                    .font(.system(size: 22, weight: .bold, design: .rounded))
-                                Spacer()
-                            }
-                            HStack {
-                                Text("200gr / 430kcal")
-                                    .font(.system(size: 14))
-                                    .foregroundStyle(.secondary)
-                                Spacer()
-                            }
+                        VStack(alignment: .leading) {
+                            Text("Primavera Pizza")
+                                .font(.system(size: 22, weight: .bold, design: .rounded))
+                            Text("200gr / 430kcal")
+                                .font(.system(size: 14))
+                                .foregroundStyle(.secondary)
+                            
                             Spacer()
+                            
                             Rectangle()
                                 .clipShape(
                                     .rect(
