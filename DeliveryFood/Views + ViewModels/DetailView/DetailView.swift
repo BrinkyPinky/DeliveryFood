@@ -8,98 +8,54 @@
 import SwiftUI
 
 struct DetailView: View {
-    let ingredients = ["Eggs", "Vegetables", "Parmezan", "Cheese", "Tomatoes", "Onions", "Pepper", "Salt"]
+    @State private var viewModel = DetailViewModel()
+    let foodModel: DetailFoodModel
+    @Binding var foodImage: UIImage
     
     var body: some View {
         GeometryReader { geometryProxy in
             VStack {
-                ScrollView(showsIndicators: false) {
-                    VStack(alignment: .leading) {
-                        Text("Primavera Pizza")
-                            .font(.system(size: 42, weight: .black, design: .monospaced))
-                            .padding(.bottom, 8)
-                        HStack {
-                            Text("$")
-                                .foregroundStyle(.red)
-                                .font(.system(size: 16, weight: .black, design: .monospaced))
-                                .offset(x: 3, y: -4)
-                            Text("5.99")
-                                .foregroundStyle(.red)
-                                .font(.system(size: 32, weight: .black, design: .monospaced))
+                CustomNavigationBarView(isLeafNeeded: true, isBackButtonNeeded: true)
+                    .padding([.leading,.trailing], 32)
+                ZStack {
+                    ScrollView(showsIndicators: false) {
+                        VStack(alignment: .leading) {
+                            FoodNameAndPriceView(foodModel: foodModel)
+                            
+                            FoodMainInformationView(geometryProxy: geometryProxy, foodModel: foodModel, foodImage: $foodImage)
+                            
+                            FoodIngredientsView(ingredients: foodModel.ingredients)
+                            
+                            Spacer()
                         }
-                        .padding(.bottom)
-                        HStack {
-                            VStack(alignment: .leading) {
-                                Spacer()
-                                DetailedDescription(heading: "Grams / Calories", text: "440gr / 1700kcal")
-                                Spacer()
-                                
-                                DetailedDescription(heading: "Crust", text: "P: 12.6G F: 8.9G C: 22.2G")
-                                Spacer()
-                                
-                                DetailedDescription(heading: "Size", text: "Medium 14\"")
-                                Spacer()
-                            }
-                            Image(uiImage: UIImage(named: "burger")!)
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .padding(.trailing, -48)
-                        }
-                        .frame(height: geometryProxy.size.height/3)
-                        .padding(.bottom, 16)
-                        Text("Ingredients")
-                            .font(.system(size: 20, weight: .bold, design: .monospaced))
-                        
-                        LazyVGrid(columns: [GridItem(), GridItem()], alignment: .leading) {
-                            ForEach(ingredients, id: \.self) { element in
-                                HStack {
-                                    Circle()
-                                        .frame(width: 15, height: 15)
-                                        .foregroundColor(.greenForSelecting)
-                                    Text(element)
-                                        .font(.system(size: 17, weight: .bold, design: .monospaced))
-                                }
-                            }
-                        }
+                    }
+                    VStack {
                         Spacer()
+                        AddToOrderButtonView(viewModel: viewModel)
                     }
                 }
-                Rectangle()
-                    .frame(height: 100)
-                    .foregroundStyle(.yellow)
-                    .clipShape(
-                        .rect(
-                            topLeadingRadius: 40,
-                            bottomLeadingRadius: 0,
-                            bottomTrailingRadius: 0,
-                            topTrailingRadius: 40
-                        )
-                    )
-                    .overlay {
-                        HStack {
-                            Text("Add to Order")
-                                .font(.system(size: 17, weight: .bold, design: .rounded))
-                            Image(systemName: "greaterthan")
-                                .font(.system(size: 14, weight: .semibold, design: .rounded))
-                        }
-                    }
             }
             .ignoresSafeArea(edges: .bottom)
-            .padding([.leading,.trailing], 32)
         }
-        .onAppear(perform: {
-            FirebaseDatabaseManager.shared.getFoodByCategoryId(1) { foodmodel in
-                print(foodmodel)
-            } completionError: { error in
-                print(error.message)
-            }
-
-        })
     }
 }
 
 #Preview {
-    DetailView()
+    DetailView(
+        foodModel: DetailFoodModel(
+            heading1: "qwr",
+            heading2: "rwqrwqt",
+            heading3: "twqtkowqk",
+            text1: "rwqojtiqwr tqw ",
+            text2: "wqokjtiwq wqt",
+            text3: "twoqj qwitij",
+            imageURL: "gs://deliveryfood-db5c8.appspot.com/food/burgers/Chefburger Junior.png",
+            ingredients: ["qwt", "twqtwqt", "qwtwqt", "qwtt tqw"],
+            name: "Tokwqtkoqtw",
+            price: 2.50,
+            foodID: "r12"
+        ), foodImage: .constant(UIImage(systemName: "xmark")!)
+    )
 }
 
 struct DetailedDescription: View {
@@ -115,5 +71,122 @@ struct DetailedDescription: View {
                 .bold()
                 .fontDesign(.rounded)
         }
+    }
+}
+
+// MARK: Food Ingredients
+struct FoodIngredientsView: View {
+    let ingredients: [String]
+    
+    var body: some View {
+        VStack(alignment: .leading) {
+            Text("Ingredients")
+                .font(.system(size: 20, weight: .bold, design: .monospaced))
+            
+            LazyVGrid(columns: [GridItem(), GridItem()], alignment: .leading) {
+                ForEach(ingredients, id: \.self) { element in
+                    HStack {
+                        Circle()
+                            .frame(width: 15, height: 15)
+                            .foregroundColor(.greenForSelecting)
+                        Text(element)
+                            .font(.system(size: 17, weight: .bold, design: .monospaced))
+                    }
+                }
+            }
+        }
+        .padding([.leading,.trailing], 32)
+    }
+}
+
+// MARK: Food Main Information
+struct FoodMainInformationView: View {
+    let geometryProxy: GeometryProxy
+    let foodModel: DetailFoodModel
+    @Binding var foodImage: UIImage
+    
+    var body: some View {
+        HStack {
+            VStack(alignment: .leading) {
+                Spacer()
+                DetailedDescription(heading: foodModel.heading1, text: foodModel.text1)
+                Spacer()
+                
+                DetailedDescription(heading: foodModel.heading2, text: foodModel.text2)
+                Spacer()
+                
+                DetailedDescription(heading: foodModel.heading3, text: foodModel.text3)
+                Spacer()
+            }
+            Image(uiImage: foodImage)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .padding(.trailing, -48)
+                .offset(x: 20, y: 0)
+        }
+        .padding(.leading, 32)
+        .frame(height: geometryProxy.size.height/3)
+        .padding(.bottom, 16)
+    }
+}
+
+// MARK: Food Name And Price
+struct FoodNameAndPriceView: View {
+    let foodModel: DetailFoodModel
+    
+    var body: some View {
+        VStack(alignment: .leading) {
+            Text(foodModel.name)
+                .font(.system(size: 42, weight: .black, design: .monospaced))
+                .padding(.bottom, 8)
+            HStack {
+                Text("$")
+                    .foregroundStyle(.red)
+                    .font(.system(size: 16, weight: .black, design: .monospaced))
+                    .offset(x: 3, y: -4)
+                Text(String(format: "%.02f", foodModel.price))
+                    .foregroundStyle(.red)
+                    .font(.system(size: 32, weight: .black, design: .monospaced))
+            }
+        }
+        .padding([.leading,.trailing], 32)
+        .padding(.bottom)
+    }
+}
+
+struct AddToOrderButtonView: View {
+    @ObservedObject var viewModel: DetailViewModel
+    
+    var body: some View {
+        Button {
+            viewModel.startAddToOrderAnimation()
+        } label: {
+            Rectangle()
+                .frame(height: 100)
+                .foregroundStyle(.yellow)
+                .clipShape(
+                    .rect(
+                        topLeadingRadius: 40,
+                        bottomLeadingRadius: 0,
+                        bottomTrailingRadius: 0,
+                        topTrailingRadius: 40
+                    )
+                )
+                .overlay {
+                        HStack {
+                            if !viewModel.isAnimatingNow {
+                                Text("Add to Order")
+                                    .font(.system(size: 17, weight: .bold, design: .rounded))
+                                    .transition(.scale)
+                            }
+                            Image(systemName: "chevron.right")
+                                .font(.system(size: 14, weight: .semibold, design: .rounded))
+                                .scaleEffect(viewModel.arrowScale)
+                                .offset(x: viewModel.arrowXOffset, y: 0)
+                        }
+                }
+                .padding([.leading,.trailing], 32)
+        }
+        .buttonStyle(.plain)
     }
 }

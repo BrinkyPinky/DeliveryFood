@@ -12,6 +12,8 @@ class HomeViewModel: ObservableObject {
     
     @Published var pickedCategoryID = 0
     
+    @Published var featuredFood = [DetailFoodModel]()
+    
     func onAppearAction() {
         FirebaseDatabaseManager.shared.getCategories { categories in
             self.categories = categories
@@ -19,5 +21,10 @@ class HomeViewModel: ObservableObject {
             // MARK: HANDLE ERROR
         }
 
+        FirebaseDatabaseManager.shared.getFoodByCategoryId(pickedCategoryID) { featuredFood in
+            self.featuredFood = featuredFood
+        } completionError: { error in
+            // MARK: HANDLE ERROR
+        }
     }
 }
