@@ -26,6 +26,8 @@ struct CategoryView: View {
         self.isPicked = isPicked
         self.showError = showError
         self.isViewLayout = false
+        
+        onInitAction()
     }
     
     //Пустышка которая ждет пока загрузится информация о возможных категориях
@@ -71,23 +73,22 @@ struct CategoryView: View {
         }
         .scaleEffect(CGSize(width: isPicked ? 1.05 : 1, height: isPicked ? 1.05 : 1))
         .animation(.easeInOut(duration: 0.15), value: isPicked)
-        .onAppear {
-            if !isViewLayout {
-                FirebaseStorageManager.shared.downloadImage(withURL: category.url) { result in
-                    switch result {
-                    case .success(let data):
-                        if let uiimage = UIImage(data: data) {
-                            image = uiimage
-                        } else {
-                            self.showError("Failed to convert the image.\nPlease report the bug")
-                        }
-                    case .failure(let error):
-                        if let error = error as? FirebaseDatabaseError {
-                            self.showError(error.localizedDescription)
-                        } else {
-                            self.showError(error.localizedDescription)
-                        }
-                    }
+    }
+    
+    private func onInitAction() {
+        FirebaseStorageManager.shared.downloadImage(withURL: category.url) { result in
+            switch result {
+            case .success(let data):
+                if let uiimage = UIImage(data: data) {
+                    image = uiimage
+                } else {
+                    self.showError("Failed to convert the image.\nPlease report the bug")
+                }
+            case .failure(let error):
+                if let error = error as? FirebaseDatabaseError {
+                    self.showError(error.localizedDescription)
+                } else {
+                    self.showError(error.localizedDescription)
                 }
             }
         }

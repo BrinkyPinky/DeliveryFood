@@ -11,14 +11,12 @@ struct FeaturedByCategoryView: View {
     @ObservedObject private var viewModel: FeaturedByCategoryViewModel
     let foodModel: DetailFoodModel
     
-    //Пустышка или нет
-    var isViewLayout: Bool
-    
     //View с загруженными данными о карточке продукта
     init(foodModel: DetailFoodModel, showError: @escaping (String) -> ()) {
         self.foodModel = foodModel
         self.viewModel = FeaturedByCategoryViewModel(showError: showError)
-        self.isViewLayout = false
+        
+        viewModel.onInitAction(imageURL: foodModel.imageURL)
     }
     
     //View пустышка (во время подгрузки данных)
@@ -36,7 +34,6 @@ struct FeaturedByCategoryView: View {
                                          foodID: ""
         )
         self.viewModel = FeaturedByCategoryViewModel()
-        self.isViewLayout = true
     }
     
     var body: some View {
@@ -77,11 +74,6 @@ struct FeaturedByCategoryView: View {
                     }
                     .buttonStyle(.plain)
                 }
-        }
-        .onAppear {
-            guard viewModel.foodImage == UIImage() else { return }
-            print(Date())
-            viewModel.onAppearAction(imageURL: foodModel.imageURL, isViewLayout: isViewLayout)
         }
     }
 }

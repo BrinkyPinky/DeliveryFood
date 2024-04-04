@@ -65,24 +65,22 @@ final class FeaturedByCategoryViewModel: ObservableObject {
     
     /// Срабатывает при инициализации и скачивает изображение из FirebaseStorage
     /// - Parameter imageURL: ссылка на изображение в FirebaseStrorage
-    func onAppearAction(imageURL: String, isViewLayout: Bool) {
-        if !isViewLayout {
-            FirebaseStorageManager.shared.downloadImage(withURL: imageURL) { result in
-                switch result {
-                case .success(let data):
-                    guard let image = UIImage(data: data) else {
-                        self.showError("Failed to convert the image.\nPlease report the bug")
-                        return
-                    }
-                    
-                    self.foodImage = image
-                    self.isImageLoading = false
-                case .failure(let error):
-                    if let error = error as? FirebaseStorageError {
-                        self.showError(error.localizedDescription)
-                    } else {
-                        self.showError(error.localizedDescription)
-                    }
+    func onInitAction(imageURL: String) {
+        FirebaseStorageManager.shared.downloadImage(withURL: imageURL) { result in
+            switch result {
+            case .success(let data):
+                guard let image = UIImage(data: data) else {
+                    self.showError("Failed to convert the image.\nPlease report the bug")
+                    return
+                }
+                
+                self.foodImage = image
+                self.isImageLoading = false
+            case .failure(let error):
+                if let error = error as? FirebaseStorageError {
+                    self.showError(error.localizedDescription)
+                } else {
+                    self.showError(error.localizedDescription)
                 }
             }
         }

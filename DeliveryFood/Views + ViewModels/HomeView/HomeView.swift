@@ -85,11 +85,12 @@ struct HomeView: View {
                 }
             }
             .errorMessageView(errorMessage: viewModel.errorMessage, isShowed: $viewModel.isErrorShowed)
-            .onAppear {
-                viewModel.onAppearAction()
-            }
+            .id(UUID())
         }
         .toolbar(.hidden)
+        .onAppear {
+            viewModel.onAppearAction()
+        }
     }
 }
 
