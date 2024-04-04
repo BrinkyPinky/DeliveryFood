@@ -19,10 +19,23 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 @main
 struct DeliveryFoodApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    @State private var isLaunchScreenShowed = true
     
     var body: some Scene {
         WindowGroup {
             HomeView()
+                .launchScreenViewModifier(isShowed: $isLaunchScreenShowed)
+                .onAppear {
+                    Timer.scheduledTimer(withTimeInterval: 4, repeats: false) { _ in
+                        withAnimation {
+                            isLaunchScreenShowed = false
+                        }
+                    }
+                }
         }
     }
+}
+
+#Preview {
+    DeliveryFoodApp() as! any View
 }

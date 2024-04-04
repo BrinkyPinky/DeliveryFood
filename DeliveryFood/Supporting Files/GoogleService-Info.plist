@@ -15,15 +15,15 @@
 	<key>STORAGE_BUCKET</key>
 	<string>deliveryfood-db5c8.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_ANALYTICS_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_APPINVITE_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>IS_GCM_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>IS_SIGNIN_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>GOOGLE_APP_ID</key>
 	<string>1:362406791456:ios:9ba38a54a2543df4cc6f45</string>
 	<key>DATABASE_URL</key>

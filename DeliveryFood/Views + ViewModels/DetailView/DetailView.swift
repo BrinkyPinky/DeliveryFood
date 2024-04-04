@@ -8,14 +8,14 @@
 import SwiftUI
 
 struct DetailView: View {
-    @State private var viewModel = DetailViewModel()
+    @StateObject private var viewModel = DetailViewModel()
     let foodModel: DetailFoodModel
     @Binding var foodImage: UIImage
     
     var body: some View {
         GeometryReader { geometryProxy in
             VStack {
-                CustomNavigationBarView(isLeafNeeded: true, isBackButtonNeeded: true)
+                CustomNavigationBarView(isLeafNeeded: true, isBackButtonNeeded: true, isCartButtonNeeded: true)
                     .padding([.leading,.trailing], 32)
                 ZStack {
                     ScrollView(showsIndicators: false) {
@@ -31,12 +31,13 @@ struct DetailView: View {
                     }
                     VStack {
                         Spacer()
-                        AddToOrderButtonView(viewModel: viewModel)
+                        AddToOrderButtonView(viewModel: viewModel, foodModel: foodModel)
                     }
                 }
             }
             .ignoresSafeArea(edges: .bottom)
         }
+        .errorMessageView(errorMessage: viewModel.errorMessage, isShowed: $viewModel.isErrorShowed)
     }
 }
 
@@ -156,10 +157,11 @@ struct FoodNameAndPriceView: View {
 
 struct AddToOrderButtonView: View {
     @ObservedObject var viewModel: DetailViewModel
+    let foodModel: DetailFoodModel
     
     var body: some View {
         Button {
-            viewModel.startAddToOrderAnimation()
+            viewModel.addToOrderAction(foodModel: foodModel)
         } label: {
             Rectangle()
                 .frame(height: 100)

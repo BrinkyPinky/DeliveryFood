@@ -5,26 +5,53 @@
 //  Created by BrinyPiny on 20.01.2024.
 //
 
-import Foundation
+import CoreData
 
-class HomeViewModel: ObservableObject {
+final class HomeViewModel: ObservableObject {
     @Published var categories = [CategoryModel]()
-    
     @Published var pickedCategoryID = 0
-    
     @Published var featuredFood = [DetailFoodModel]()
     
+    //errorView
+    var errorMessage = ""
+    @Published var isErrorShowed = false
+    
+    //loadingStatus
+    var isCategoriesLoading = true
+    var isFeaturedFoodLoading = true
+    
     func onAppearAction() {
-        FirebaseDatabaseManager.shared.getCategories { categories in
-            self.categories = categories
-        } completionError: { error in
-            // MARK: HANDLE ERROR
+        FirebaseDatabaseManager.shared.getCategories { result in
+            switch result {
+            case .success(let categories):
+                self.categories = categories
+                self.isCategoriesLoading = false
+            case .failure(let error):
+                if let error = error as? FirebaseDatabaseError {
+                    self.showError(withMessage: error.localizedDescription)
+                } else {
+                    self.showError(withMessage: error.localizedDescription)
+                }
+            }
         }
-
-        FirebaseDatabaseManager.shared.getFoodByCategoryId(pickedCategoryID) { featuredFood in
-            self.featuredFood = featuredFood
-        } completionError: { error in
-            // MARK: HANDLE ERROR
+        
+        FirebaseDatabaseManager.shared.getFoodByCategoryId(pickedCategoryID) { result in
+            switch result {
+            case .success(let featuredFood):
+                self.featuredFood = featuredFood
+                self.isFeaturedFoodLoading = false
+            case .failure(let error):
+                if let error = error as? FirebaseDatabaseError {
+                    self.showError(withMessage: error.localizedDescription)
+                } else {
+                    self.showError(withMessage: error.localizedDescription)
+                }
+            }
         }
+    }
+    
+    func showError(withMessage message: String) {
+        errorMessage = message
+        isErrorShowed = true
     }
 }

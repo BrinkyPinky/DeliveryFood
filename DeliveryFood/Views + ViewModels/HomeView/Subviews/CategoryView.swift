@@ -8,14 +8,40 @@
 import SwiftUI
 
 struct CategoryView: View {
-    let category: CategoryModel
-    let isPicked: Bool
     @State private var image = UIImage()
+    let category: CategoryModel
+    
+    //Номер выбранной категории на данный момент
+    let isPicked: Bool
+    
+    //Показать ошибку
+    let showError: (String) -> ()
+    
+    //Пустышка или нет
+    var isViewLayout: Bool
+    
+    //Подгружает картинку
+    init(category: CategoryModel, isPicked: Bool, showError: @escaping (String) -> Void) {
+        self.category = category
+        self.isPicked = isPicked
+        self.showError = showError
+        self.isViewLayout = false
+    }
+    
+    //Пустышка которая ждет пока загрузится информация о возможных категориях
+    init() {
+        self.category = CategoryModel(id: 0, url: "", name: "riwjqjirrw")
+        self.isPicked = false
+        self.showError = { _ in }
+        self.isViewLayout = true
+    }
     
     var body: some View {
         VStack {
             Image(uiImage: image)
                 .resizable()
+                .clipShape(RoundedRectangle(cornerRadius: 20))
+                .padding(isViewLayout ? 8 : 0)
                 .frame(width: 125, height: 125)
                 .background {
                     Image(uiImage: image)
@@ -43,20 +69,31 @@ struct CategoryView: View {
                 .foregroundStyle(isPicked ? Color.greenForSelecting : Color.init(uiColor: UIColor.systemBackground))
                 .shadow(color: .primary.opacity(0.2), radius: 5, x: 2, y: 2)
         }
+        .scaleEffect(CGSize(width: isPicked ? 1.05 : 1, height: isPicked ? 1.05 : 1))
+        .animation(.easeInOut(duration: 0.15), value: isPicked)
         .onAppear {
-            FirebaseStorageManager.shared.downloadImage(withURL: category.url) { data in
-                guard data != nil else {
-                    image = UIImage(systemName: "xmark.diamond")!
-                    return
+            if !isViewLayout {
+                FirebaseStorageManager.shared.downloadImage(withURL: category.url) { result in
+                    switch result {
+                    case .success(let data):
+                        if let uiimage = UIImage(data: data) {
+                            image = uiimage
+                        } else {
+                            self.showError("Failed to convert the image.\nPlease report the bug")
+                        }
+                    case .failure(let error):
+                        if let error = error as? FirebaseDatabaseError {
+                            self.showError(error.localizedDescription)
+                        } else {
+                            self.showError(error.localizedDescription)
+                        }
+                    }
                 }
-                
-                image = UIImage(data: data!)!
             }
         }
-        .animation(.easeInOut(duration: 0.15), value: isPicked)
     }
 }
 
 #Preview {
-    CategoryView(category: CategoryModel(id: 1, url: "gs://deliveryfood-db5c8.appspot.com/categories/pizza.png", name: "Pizza"), isPicked: true)
+    CategoryView(category: CategoryModel(id: 1, url: "gs://deliveryfood-db5c8.appspot.com/categories/pizza.png", name: "Pizza"), isPicked: true, showError: { _ in })
 }

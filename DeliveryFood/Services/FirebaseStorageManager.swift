@@ -8,16 +8,23 @@
 import Foundation
 import FirebaseStorage
 
-class FirebaseStorageManager {
+final class FirebaseStorageManager {
     static var shared = FirebaseStorageManager()
     
     private let storage = Storage.storage()
-    
-    func downloadImage(withURL url: String, completion: @escaping (Data?) -> Void) {
-        let ref = storage.reference(forURL: url)
-        
-        ref.getData(maxSize: 1024*1024) { data, _ in
-            completion(data)
+    var smth = 1
+    func downloadImage(withURL url: String, completion: @escaping (Result<Data, Error>) -> Void) {
+        guard (URL(string: url) != nil) else {
+            completion(.failure(FirebaseStorageError.getDataError))
+            return
         }
+        
+        let ref = storage.reference(forURL: url)
+
+        ref.getData(maxSize: 1024*1024) { data, error in
+            guard let data = data else { completion(.failure(error!)); return }
+            completion(.success(data))
+        }
+        smth += 1
     }
 }

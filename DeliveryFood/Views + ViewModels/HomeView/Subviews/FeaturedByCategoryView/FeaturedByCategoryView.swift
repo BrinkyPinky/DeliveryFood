@@ -8,10 +8,36 @@
 import SwiftUI
 
 struct FeaturedByCategoryView: View {
-    @StateObject private var viewModel = FeaturedByCategoryViewModel()
-    @State private var foodImage = UIImage()
-    
+    @ObservedObject private var viewModel: FeaturedByCategoryViewModel
     let foodModel: DetailFoodModel
+    
+    //Пустышка или нет
+    var isViewLayout: Bool
+    
+    //View с загруженными данными о карточке продукта
+    init(foodModel: DetailFoodModel, showError: @escaping (String) -> ()) {
+        self.foodModel = foodModel
+        self.viewModel = FeaturedByCategoryViewModel(showError: showError)
+        self.isViewLayout = false
+    }
+    
+    //View пустышка (во время подгрузки данных)
+    init() {
+        self.foodModel = DetailFoodModel(heading1: "",
+                                         heading2: "",
+                                         heading3: "",
+                                         text1: "rjwqijriqw",
+                                         text2: "",
+                                         text3: "",
+                                         imageURL: "",
+                                         ingredients: [],
+                                         name: "wqrijjirwqirjiowqjoirjqwioj",
+                                         price: 22,
+                                         foodID: ""
+        )
+        self.viewModel = FeaturedByCategoryViewModel()
+        self.isViewLayout = true
+    }
     
     var body: some View {
         VStack {
@@ -21,7 +47,7 @@ struct FeaturedByCategoryView: View {
                 .frame(height: 175)
                 .overlay {
                     NavigationLink {
-                        DetailView(foodModel: foodModel, foodImage: $foodImage)
+                        DetailView(foodModel: foodModel, foodImage: $viewModel.foodImage)
                             .toolbar(.hidden)
                     } label: {
                         HStack {
@@ -36,13 +62,16 @@ struct FeaturedByCategoryView: View {
                                 
                                 addToCartWithPriceButtonView(foodModel: foodModel, viewModel: viewModel)
                                     .onTapGesture {
-                                        viewModel.startAddToCartAnimation()
+                                        viewModel.addToCartAction(foodModel: foodModel)
                                     }
                             }
                             Spacer()
-                            Image(uiImage: foodImage)
+                            Image(uiImage: viewModel.foodImage)
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
+                                .clipShape(RoundedRectangle(cornerRadius: 20))
+                                .redacted(reason: viewModel.isImageLoading ? .placeholder : .invalidated)
+                                .animation(.easeInOut(duration: 0.2), value: viewModel.isImageLoading)
                         }
                         .padding()
                     }
@@ -50,32 +79,29 @@ struct FeaturedByCategoryView: View {
                 }
         }
         .onAppear {
-            FirebaseStorageManager.shared.downloadImage(withURL: foodModel.imageURL) { data in
-                guard data != nil else {
-                    foodImage = UIImage(systemName: "xmark")!
-                    return
-                }
-                
-                foodImage = UIImage(data: data!)!
-            }
+            guard viewModel.foodImage == UIImage() else { return }
+            print(Date())
+            viewModel.onAppearAction(imageURL: foodModel.imageURL, isViewLayout: isViewLayout)
         }
     }
 }
 
+private let previewDetailFoodModel = DetailFoodModel(
+    heading1: "",
+    heading2: "",
+    heading3: "",
+    text1: "200gr / 430kcal",
+    text2: "",
+    text3: "",
+    imageURL: "gs://deliveryfood-db5c8.appspot.com/food/burgers/Chickenburger.png",
+    ingredients: [],
+    name: "Chefburger ricececerqwqr",
+    price: 1.20,
+    foodID: "burger1"
+)
+
 #Preview {
-    FeaturedByCategoryView(foodModel: DetailFoodModel(
-        heading1: "",
-        heading2: "",
-        heading3: "",
-        text1: "200gr / 430kcal",
-        text2: "",
-        text3: "",
-        imageURL: "gs://deliveryfood-db5c8.appspot.com/food/burgers/Chickenburger.png",
-        ingredients: [],
-        name: "Chefburger ricececerqwqr",
-        price: 1.20,
-        foodID: "burger1"
-    ))
+    FeaturedByCategoryView(foodModel: previewDetailFoodModel, showError: { _ in })
 }
 
 struct addToCartWithPriceButtonView: View {
