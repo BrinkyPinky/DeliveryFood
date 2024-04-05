@@ -30,7 +30,7 @@ struct HomeView: View {
                     .padding([.leading, .trailing], 32)
                     
                     ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 16) {
+                        LazyHStack(spacing: 16) {
             
                             //Если категории загружается то показываются пустышки
                             if viewModel.isCategoriesLoading {
@@ -63,17 +63,19 @@ struct HomeView: View {
                                 .font(.system(size: 24))
                             Spacer()
                         }
-                        
-                        //Если предложенная еда загружается то показываются пустышки
-                        if viewModel.isFeaturedFoodLoading {
-                            ForEach(0..<5) { _ in
-                                FeaturedByCategoryView()
-                            }
-                            .disabled(true)
-                            .redacted(reason: .placeholder)
-                        } else {
-                            ForEach(viewModel.featuredFood, id: \.foodID) { foodModel in
-                                FeaturedByCategoryView(foodModel: foodModel, showError: viewModel.showError)
+                        LazyVStack {
+                            
+                            //Если предложенная еда загружается то показываются пустышки
+                            if viewModel.isFeaturedFoodLoading {
+                                ForEach(0..<5) { _ in
+                                    FeaturedByCategoryView()
+                                }
+                                .disabled(true)
+                                .redacted(reason: .placeholder)
+                            } else {
+                                ForEach(viewModel.featuredFood, id: \.foodID) { foodModel in
+                                    FeaturedByCategoryView(foodModel: foodModel, showError: viewModel.showError)
+                                }
                             }
                         }
                     }
@@ -85,7 +87,6 @@ struct HomeView: View {
                 }
             }
             .errorMessageView(errorMessage: viewModel.errorMessage, isShowed: $viewModel.isErrorShowed)
-            .id(UUID())
         }
         .toolbar(.hidden)
         .onAppear {

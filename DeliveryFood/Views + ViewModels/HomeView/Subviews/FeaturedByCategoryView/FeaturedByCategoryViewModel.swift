@@ -63,9 +63,9 @@ final class FeaturedByCategoryViewModel: ObservableObject {
         }
     }
     
-    /// Срабатывает при инициализации и скачивает изображение из FirebaseStorage
+    /// Срабатывает при появлении View и скачивает изображение из FirebaseStorage
     /// - Parameter imageURL: ссылка на изображение в FirebaseStrorage
-    func onInitAction(imageURL: String) {
+    func onAppearAction(imageURL: String) {
         FirebaseStorageManager.shared.downloadImage(withURL: imageURL) { result in
             switch result {
             case .success(let data):

@@ -9,16 +9,18 @@ import SwiftUI
 
 struct CategoryView: View {
     @State private var image = UIImage()
-    let category: CategoryModel
+    private let category: CategoryModel
     
     //Номер выбранной категории на данный момент
-    let isPicked: Bool
+    private var isPicked: Bool
     
     //Показать ошибку
-    let showError: (String) -> ()
+    private let showError: (String) -> ()
     
+    //Статус загрузки изображения
+    @State private var isImageLoaded = false
     //Пустышка или нет
-    var isViewLayout: Bool
+    private var isViewLayout: Bool
     
     //Подгружает картинку
     init(category: CategoryModel, isPicked: Bool, showError: @escaping (String) -> Void) {
@@ -26,8 +28,6 @@ struct CategoryView: View {
         self.isPicked = isPicked
         self.showError = showError
         self.isViewLayout = false
-        
-        onInitAction()
     }
     
     //Пустышка которая ждет пока загрузится информация о возможных категориях
@@ -43,7 +43,7 @@ struct CategoryView: View {
             Image(uiImage: image)
                 .resizable()
                 .clipShape(RoundedRectangle(cornerRadius: 20))
-                .padding(isViewLayout ? 8 : 0)
+                .padding(isImageLoaded ? 0 : 8)
                 .frame(width: 125, height: 125)
                 .background {
                     Image(uiImage: image)
@@ -53,6 +53,7 @@ struct CategoryView: View {
                         .blur(radius: 20)
                         .offset(x: 10.0, y: 10.0)
                 }
+                .redacted(reason: isImageLoaded ? .invalidated : .placeholder)
                 
             HStack {
                 Text(category.name)
@@ -73,22 +74,28 @@ struct CategoryView: View {
         }
         .scaleEffect(CGSize(width: isPicked ? 1.05 : 1, height: isPicked ? 1.05 : 1))
         .animation(.easeInOut(duration: 0.15), value: isPicked)
+        .onAppear {
+            guard !isViewLayout else { return }
+            onAppearAction()
+        }
     }
     
-    private func onInitAction() {
+    private func onAppearAction() {
         FirebaseStorageManager.shared.downloadImage(withURL: category.url) { result in
             switch result {
             case .success(let data):
                 if let uiimage = UIImage(data: data) {
                     image = uiimage
+                    
+                    isImageLoaded = true
                 } else {
-                    self.showError("Failed to convert the image.\nPlease report the bug")
+                    showError("Failed to convert the image.\nPlease report the bug")
                 }
             case .failure(let error):
                 if let error = error as? FirebaseDatabaseError {
-                    self.showError(error.localizedDescription)
+                    showError(error.localizedDescription)
                 } else {
-                    self.showError(error.localizedDescription)
+                    showError(error.localizedDescription)
                 }
             }
         }

@@ -21,6 +21,13 @@ final class HomeViewModel: ObservableObject {
     var isFeaturedFoodLoading = true
     
     func onAppearAction() {
+        
+        if let all = FirebaseStorageManager.shared.cache.value(forKey: "allObjects") as? NSArray {
+            for object in all {
+                print("object is \(object)")
+            }
+        }
+        
         FirebaseDatabaseManager.shared.getCategories { result in
             switch result {
             case .success(let categories):
