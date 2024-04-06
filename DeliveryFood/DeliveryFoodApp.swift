@@ -9,11 +9,11 @@ import SwiftUI
 import FirebaseCore
 
 class AppDelegate: NSObject, UIApplicationDelegate {
-  func application(_ application: UIApplication,
-                   didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-    FirebaseApp.configure()
-    return true
-  }
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+        FirebaseApp.configure()
+        return true
+    }
 }
 
 @main
@@ -23,19 +23,20 @@ struct DeliveryFoodApp: App {
     
     var body: some Scene {
         WindowGroup {
-            HomeView()
-                .launchScreenViewModifier(isShowed: $isLaunchScreenShowed)
-                .onAppear {
-                    Timer.scheduledTimer(withTimeInterval: 4, repeats: false) { _ in
-                        withAnimation {
-                            isLaunchScreenShowed = false
-                        }
-                    }
-                }
+            //HomeView()
+            //                .launchScreenViewModifier(isShowed: $isLaunchScreenShowed)
+            //                .onAppear {
+            //                    Timer.scheduledTimer(withTimeInterval: 4, repeats: false) { _ in
+            //                        withAnimation {
+            //                            isLaunchScreenShowed = false
+            //                        }
+            //                    }
+            //                }
+            AddNewAddressView()
         }
     }
 }
-
-#Preview {
-    DeliveryFoodApp() as! any View
-}
+    
+    #Preview {
+        DeliveryFoodApp() as! any View
+    }

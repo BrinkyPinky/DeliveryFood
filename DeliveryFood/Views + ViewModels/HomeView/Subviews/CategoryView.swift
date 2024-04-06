@@ -53,7 +53,7 @@ struct CategoryView: View {
                         .blur(radius: 20)
                         .offset(x: 10.0, y: 10.0)
                 }
-                .redacted(reason: isImageLoaded ? .invalidated : .placeholder)
+                .redacted(reason: isImageLoaded ? [] : .placeholder)
                 
             HStack {
                 Text(category.name)
@@ -61,7 +61,7 @@ struct CategoryView: View {
                     .fontWeight(isPicked ? .bold : .regular)
                 if isPicked {
                     Image(systemName: "arrow.right")
-                        .bold()
+                        .fontWeight(.bold)
                         .opacity(isPicked ? 1 : 0)
                 }
             }

@@ -36,13 +36,16 @@ struct BillView: View {
                 .listRowSeparator(.hidden)
                 
                 //сумма и кнопка для оплаты
-                TotalPrice()
+                TotalPrice(viewModel: viewModel)
             }
             .listStyle(.plain)
             
         }
         .environment(\.editMode, $editMode)
         .navigationBarBackButtonHidden()
+        .sheet(isPresented: $viewModel.isOrderConfirmViewPresented, content: {
+            OrderConfirmView()
+        })
     }
 }
 
@@ -53,25 +56,31 @@ struct BillView: View {
 // MARK: Сумма и кнопка для оплаты
 
 struct TotalPrice: View {
+    @ObservedObject var viewModel: BillViewModel
+    
     var body: some View {
         HStack {
             HStack(alignment: .bottom) {
                 Text("$")
                     .font(.system(size: 40, weight: .bold, design: .monospaced))
-                Text("37.50")
+                Text(String(format: "%.2f", viewModel.totalPrice))
                     .font(.system(size: 50, weight: .bold, design: .rounded))
             }
             
             Spacer()
             
-            RoundedRectangle(cornerRadius: 10)
-                .stroke(lineWidth: 1)
-                .frame(width: 50, height: 50)
-                .foregroundStyle(.gray)
-                .overlay {
-                    Image(systemName: "arrow.right")
-                        .font(.system(size: 18, weight: .bold))
-                }
+            Button(action: {
+                viewModel.isOrderConfirmViewPresented = true
+            }, label: {
+                RoundedRectangle(cornerRadius: 10)
+                    .stroke(lineWidth: 1)
+                    .frame(width: 50, height: 50)
+                    .foregroundStyle(.gray)
+                    .overlay {
+                        Image(systemName: "arrow.right")
+                            .font(.system(size: 18, weight: .bold))
+                    }
+            })
         }
         .listRowInsets(EdgeInsets(top: 16, leading: 32, bottom: 0, trailing: 32))
         .listRowSeparator(.hidden)
