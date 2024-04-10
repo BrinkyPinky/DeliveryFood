@@ -10,50 +10,56 @@ import SwiftUI
 struct ErrorMessageViewModifier: ViewModifier {
     let errorMessage: String
     @Binding var isShowed: Bool
+    @State private var isKeyboardVisible = false
     
     func body(content: Content) -> some View {
         ZStack() {
-            GeometryReader(content: { geometry in
-                content
-                VStack {
-                    Spacer()
-                    RoundedRectangle(cornerRadius: 30)
-                        .shadow(color: Color(uiColor: .label), radius: 10)
-                        .frame(height: geometry.size.height/5)
-                        .overlay {
-                            ZStack {
-                                Image(systemName: "exclamationmark.triangle.fill")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(height: geometry.size.height/8)
-                                    .foregroundColor(.red)
-                                    .opacity(0.3)
-                                VStack {
-                                    Text("What Da...")
-                                        .font(.system(size: 24))
-                                        .bold()
-                                        .colorInvert()
-                                    Spacer()
-                                    Text(errorMessage)
-                                        .multilineTextAlignment(.center)
-                                        .colorInvert()
-                                    Spacer()
-                                }
+            content
+            VStack {
+                Spacer()
+                RoundedRectangle(cornerRadius: 30)
+                    .shadow(color: Color(uiColor: .label), radius: 10)
+                    .frame(height: UIScreen.main.bounds.height/5)
+                    .overlay {
+                        ZStack {
+                            Image(systemName: "exclamationmark.triangle.fill")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(height: UIScreen.main.bounds.height/8)
+                                .foregroundColor(.red)
+                                .opacity(0.3)
+                            VStack {
+                                Text("What Da...")
+                                    .font(.system(size: 24))
+                                    .bold()
+                                    .colorInvert()
+                                Spacer()
+                                Text(errorMessage)
+                                    .multilineTextAlignment(.center)
+                                    .colorInvert()
+                                Spacer()
                             }
-                            .padding()
                         }
-                        .padding([.leading, .trailing])
-                }
-                .opacity(isShowed ? 1 : 0)
-                .offset(x: 0, y: isShowed ? 0 : geometry.size.height/5)
-                .animation(.easeInOut(duration: 0.3), value: isShowed)
-                .onChange(of: isShowed) {
-                    if isShowed == true {
-                        Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { _ in
-                            isShowed = false
-                        }
+                        .padding()
+                    }
+                    .padding([.leading, .trailing])
+            }
+            .opacity(isShowed ? 1 : 0)
+            .offset(x: 0, y: isShowed ? 0 : UIScreen.main.bounds.height/5)
+            .animation(.easeInOut(duration: 0.3), value: isShowed)
+            .offset(y: isKeyboardVisible ? -20 : 0)
+            .onChange(of: isShowed) {
+                if isShowed == true {
+                    Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { _ in
+                        isShowed = false
                     }
                 }
+            }
+            .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification), perform: { _ in
+                isKeyboardVisible = true
+            })
+            .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification), perform: { _ in
+                isKeyboardVisible = false
             })
         }
     }

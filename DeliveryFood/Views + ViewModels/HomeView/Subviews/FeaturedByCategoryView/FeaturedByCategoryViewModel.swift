@@ -42,20 +42,21 @@ final class FeaturedByCategoryViewModel: ObservableObject {
                 withAnimation(.easeInOut(duration: 0.2)) {
                     animationSuccessTextScale = 1
                 } completion: { [self] in
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { [self] in
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { [weak self] in
+                        guard let self = self else { return }
                         withAnimation(.easeInOut(duration: 0.2)) {
-                            animationSuccessTextScale = 0
-                            animationMainTextOpacity = 1
+                            self.animationSuccessTextScale = 0
+                            self.animationMainTextOpacity = 1
                             
                             do {
                                 try CoreDataManager.shared.addBillPosition(foodModel: foodModel)
                             } catch let error as CoreDataError {
-                                showError(error.localizedDescription)
+                                self.showError(error.localizedDescription)
                             } catch {
-                                showError(error.localizedDescription)
+                                self.showError(error.localizedDescription)
                             }
                         } completion: { [self] in
-                            isAlreadyAddingToCart = false
+                            self.isAlreadyAddingToCart = false
                         }
                     }
                 }
@@ -66,7 +67,8 @@ final class FeaturedByCategoryViewModel: ObservableObject {
     /// Срабатывает при появлении View и скачивает изображение из FirebaseStorage
     /// - Parameter imageURL: ссылка на изображение в FirebaseStrorage
     func onAppearAction(imageURL: String) {
-        FirebaseStorageManager.shared.downloadImage(withURL: imageURL) { result in
+        FirebaseStorageManager.shared.downloadImage(withURL: imageURL) { [weak self] result in
+            guard let self = self else { return }
             switch result {
             case .success(let data):
                 guard let image = UIImage(data: data) else {

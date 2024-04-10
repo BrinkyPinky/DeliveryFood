@@ -21,14 +21,8 @@ final class HomeViewModel: ObservableObject {
     var isFeaturedFoodLoading = true
     
     func onAppearAction() {
-        
-        if let all = FirebaseStorageManager.shared.cache.value(forKey: "allObjects") as? NSArray {
-            for object in all {
-                print("object is \(object)")
-            }
-        }
-        
-        FirebaseDatabaseManager.shared.getCategories { result in
+        FirebaseDatabaseManager.shared.getCategories { [weak self] result in
+            guard let self = self else { return }
             switch result {
             case .success(let categories):
                 self.categories = categories
@@ -42,7 +36,8 @@ final class HomeViewModel: ObservableObject {
             }
         }
         
-        FirebaseDatabaseManager.shared.getFoodByCategoryId(pickedCategoryID) { result in
+        FirebaseDatabaseManager.shared.getFoodByCategoryId(pickedCategoryID) { [weak self] result in
+            guard let self = self else { return }
             switch result {
             case .success(let featuredFood):
                 self.featuredFood = featuredFood

@@ -18,6 +18,10 @@
 		6848B0F42BC1FD260093FC81 /* AddressSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6848B0F32BC1FD260093FC81 /* AddressSelectionView.swift */; };
 		6848B0F62BC1FD3B0093FC81 /* OrderConfirmView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6848B0F52BC1FD3B0093FC81 /* OrderConfirmView.swift */; };
 		6848B0F82BC1FD4A0093FC81 /* OrderConfirmViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6848B0F72BC1FD4A0093FC81 /* OrderConfirmViewModel.swift */; };
+		686602AA2BC3038F009C9EB8 /* AddressModel+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 686602A82BC3038F009C9EB8 /* AddressModel+CoreDataClass.swift */; };
+		686602AB2BC3038F009C9EB8 /* AddressModel+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 686602A92BC3038F009C9EB8 /* AddressModel+CoreDataProperties.swift */; };
+		686602AD2BC30736009C9EB8 /* SearchAddressModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 686602AC2BC30736009C9EB8 /* SearchAddressModel.swift */; };
+		686602AF2BC31A9D009C9EB8 /* GeocoderManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 686602AE2BC31A9D009C9EB8 /* GeocoderManager.swift */; };
 		687A154F2B5D0AE80097E21B /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 687A154E2B5D0AE80097E21B /* DetailView.swift */; };
 		687A15512B5D267A0097E21B /* DetailFoodModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 687A15502B5D267A0097E21B /* DetailFoodModel.swift */; };
 		689B129B2B5BB89700F7FB7B /* Vetka.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 689B129A2B5BB89700F7FB7B /* Vetka.ttf */; };
@@ -31,6 +35,7 @@
 		68A09A742BBC74C700927540 /* CoreDataError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A09A732BBC74C700927540 /* CoreDataError.swift */; };
 		68A09A762BBC74D800927540 /* FirebaseStorageError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A09A752BBC74D800927540 /* FirebaseStorageError.swift */; };
 		68A09A782BBC74E000927540 /* FirebaseDatabaseError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68A09A772BBC74E000927540 /* FirebaseDatabaseError.swift */; };
+		68A637482BC595BE00E7D311 /* SwiftyJSON in Frameworks */ = {isa = PBXBuildFile; productRef = 68A637472BC595BE00E7D311 /* SwiftyJSON */; };
 		68AD08BA2BBE0FC0004006C6 /* LaunchScreenViewModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68AD08B92BBE0FC0004006C6 /* LaunchScreenViewModifier.swift */; };
 		68B50BDD2BB9807900EFE2B0 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 68B50BDB2BB9807900EFE2B0 /* Model.xcdatamodeld */; };
 		68B50BDF2BB9814F00EFE2B0 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68B50BDE2BB9814F00EFE2B0 /* CoreDataManager.swift */; };
@@ -68,6 +73,10 @@
 		6848B0F32BC1FD260093FC81 /* AddressSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressSelectionView.swift; sourceTree = "<group>"; };
 		6848B0F52BC1FD3B0093FC81 /* OrderConfirmView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderConfirmView.swift; sourceTree = "<group>"; };
 		6848B0F72BC1FD4A0093FC81 /* OrderConfirmViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderConfirmViewModel.swift; sourceTree = "<group>"; };
+		686602A82BC3038F009C9EB8 /* AddressModel+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AddressModel+CoreDataClass.swift"; sourceTree = "<group>"; };
+		686602A92BC3038F009C9EB8 /* AddressModel+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AddressModel+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		686602AC2BC30736009C9EB8 /* SearchAddressModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchAddressModel.swift; sourceTree = "<group>"; };
+		686602AE2BC31A9D009C9EB8 /* GeocoderManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeocoderManager.swift; sourceTree = "<group>"; };
 		686814DE2B5BB788001EC30E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		687A154E2B5D0AE80097E21B /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
 		687A15502B5D267A0097E21B /* DetailFoodModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailFoodModel.swift; sourceTree = "<group>"; };
@@ -106,6 +115,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				68A637482BC595BE00E7D311 /* SwiftyJSON in Frameworks */,
 				6848B0E92BC1FB950093FC81 /* FirebaseDatabase in Frameworks */,
 				6848B0EB2BC1FB950093FC81 /* FirebaseStorage in Frameworks */,
 			);
@@ -133,13 +143,29 @@
 		6848B0EC2BC1FBAD0093FC81 /* OrderConfirmView */ = {
 			isa = PBXGroup;
 			children = (
-				6848B0EF2BC1FC2B0093FC81 /* AddNewAddressView.swift */,
-				6848B0F32BC1FD260093FC81 /* AddressSelectionView.swift */,
 				6848B0F52BC1FD3B0093FC81 /* OrderConfirmView.swift */,
 				6848B0F72BC1FD4A0093FC81 /* OrderConfirmViewModel.swift */,
-				6848B0F12BC1FC480093FC81 /* AddNewAddressViewModel.swift */,
+				6848B0F92BC1FF970093FC81 /* Subviews */,
 			);
 			path = OrderConfirmView;
+			sourceTree = "<group>";
+		};
+		6848B0F92BC1FF970093FC81 /* Subviews */ = {
+			isa = PBXGroup;
+			children = (
+				6848B0F32BC1FD260093FC81 /* AddressSelectionView.swift */,
+				6848B0FA2BC1FFAE0093FC81 /* AddNewAddressView */,
+			);
+			path = Subviews;
+			sourceTree = "<group>";
+		};
+		6848B0FA2BC1FFAE0093FC81 /* AddNewAddressView */ = {
+			isa = PBXGroup;
+			children = (
+				6848B0EF2BC1FC2B0093FC81 /* AddNewAddressView.swift */,
+				6848B0F12BC1FC480093FC81 /* AddNewAddressViewModel.swift */,
+			);
+			path = AddNewAddressView;
 			sourceTree = "<group>";
 		};
 		687A154D2B5D0AD90097E21B /* DetailView */ = {
@@ -166,6 +192,7 @@
 				689B12DD2B5BD62D00F7FB7B /* FirebaseDatabaseManager.swift */,
 				689B12E12B5BD9E700F7FB7B /* FirebaseStorageManager.swift */,
 				68B50BDE2BB9814F00EFE2B0 /* CoreDataManager.swift */,
+				686602AE2BC31A9D009C9EB8 /* GeocoderManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -215,6 +242,7 @@
 			children = (
 				689B12E42B5BE2ED00F7FB7B /* CategoryModel.swift */,
 				687A15502B5D267A0097E21B /* DetailFoodModel.swift */,
+				686602AC2BC30736009C9EB8 /* SearchAddressModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -244,6 +272,8 @@
 			children = (
 				68B50BE62BB9849900EFE2B0 /* PositionForBillModel+CoreDataClass.swift */,
 				68B50BE72BB9849900EFE2B0 /* PositionForBillModel+CoreDataProperties.swift */,
+				686602A82BC3038F009C9EB8 /* AddressModel+CoreDataClass.swift */,
+				686602A92BC3038F009C9EB8 /* AddressModel+CoreDataProperties.swift */,
 				68B50BDB2BB9807900EFE2B0 /* Model.xcdatamodeld */,
 			);
 			path = CoreDataModels;
@@ -330,6 +360,7 @@
 			packageProductDependencies = (
 				6848B0E82BC1FB950093FC81 /* FirebaseDatabase */,
 				6848B0EA2BC1FB950093FC81 /* FirebaseStorage */,
+				68A637472BC595BE00E7D311 /* SwiftyJSON */,
 			);
 			productName = DeliveryFood;
 			productReference = 68C291D52B5916360050BC4A /* DeliveryFood.app */;
@@ -383,6 +414,7 @@
 			mainGroup = 68C291CC2B5916360050BC4A;
 			packageReferences = (
 				6848B0E72BC1FB950093FC81 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				68A637462BC595BE00E7D311 /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
 			);
 			productRefGroup = 68C291D62B5916360050BC4A /* Products */;
 			projectDirPath = "";
@@ -431,11 +463,13 @@
 				687A154F2B5D0AE80097E21B /* DetailView.swift in Sources */,
 				689B12DE2B5BD62D00F7FB7B /* FirebaseDatabaseManager.swift in Sources */,
 				68B50BDD2BB9807900EFE2B0 /* Model.xcdatamodeld in Sources */,
+				686602AF2BC31A9D009C9EB8 /* GeocoderManager.swift in Sources */,
 				68DA00182B9B0C7C00177409 /* BillView.swift in Sources */,
 				6848B0F82BC1FD4A0093FC81 /* OrderConfirmViewModel.swift in Sources */,
 				687A15512B5D267A0097E21B /* DetailFoodModel.swift in Sources */,
 				6848B0F22BC1FC480093FC81 /* AddNewAddressViewModel.swift in Sources */,
 				68B50BE92BB9849900EFE2B0 /* PositionForBillModel+CoreDataProperties.swift in Sources */,
+				686602AD2BC30736009C9EB8 /* SearchAddressModel.swift in Sources */,
 				68A09A762BBC74D800927540 /* FirebaseStorageError.swift in Sources */,
 				68A09A782BBC74E000927540 /* FirebaseDatabaseError.swift in Sources */,
 				68A09A6E2BBC5B7700927540 /* ErrorMessageViewModifier.swift in Sources */,
@@ -445,6 +479,8 @@
 				681FC00E2B5EEF8100D9BDFB /* DetailViewModel.swift in Sources */,
 				6848B0F42BC1FD260093FC81 /* AddressSelectionView.swift in Sources */,
 				68DA001E2B9B16C700177409 /* DashedLine.swift in Sources */,
+				686602AA2BC3038F009C9EB8 /* AddressModel+CoreDataClass.swift in Sources */,
+				686602AB2BC3038F009C9EB8 /* AddressModel+CoreDataProperties.swift in Sources */,
 				6848B0F02BC1FC2B0093FC81 /* AddNewAddressView.swift in Sources */,
 				6848B0F62BC1FD3B0093FC81 /* OrderConfirmView.swift in Sources */,
 				6848B0EE2BC1FC0D0093FC81 /* AddNewAddressError.swift in Sources */,
@@ -734,6 +770,14 @@
 				minimumVersion = 10.23.1;
 			};
 		};
+		68A637462BC595BE00E7D311 /* XCRemoteSwiftPackageReference "SwiftyJSON" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SwiftyJSON/SwiftyJSON";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -746,6 +790,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6848B0E72BC1FB950093FC81 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseStorage;
+		};
+		68A637472BC595BE00E7D311 /* SwiftyJSON */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 68A637462BC595BE00E7D311 /* XCRemoteSwiftPackageReference "SwiftyJSON" */;
+			productName = SwiftyJSON;
 		};
 /* End XCSwiftPackageProductDependency section */
 
