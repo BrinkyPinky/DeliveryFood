@@ -7,9 +7,10 @@
 
 import Foundation
 
-struct DetailFoodModel {
+struct DetailFoodModel: Decodable {
     let heading1, heading2, heading3: String
     let text1, text2, text3: String
+    let referenceForItself: String
     
     let imageURL: String
     let ingredients: [String]

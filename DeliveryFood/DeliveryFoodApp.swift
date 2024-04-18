@@ -24,19 +24,24 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 struct DeliveryFoodApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @State private var isLaunchScreenShowed = true
+    @Environment(\.scenePhase) private var scenePhase
     
     var body: some Scene {
         WindowGroup {
-            //HomeView()
-            //                .launchScreenViewModifier(isShowed: $isLaunchScreenShowed)
-            //                .onAppear {
-            //                    Timer.scheduledTimer(withTimeInterval: 4, repeats: false) { _ in
-            //                        withAnimation {
-            //                            isLaunchScreenShowed = false
-            //                        }
-            //                    }
-            //                }
-            AddNewAddressView()
+            HomeView()
+                .launchScreenViewModifier(isShowed: $isLaunchScreenShowed)
+                .onAppear {
+                    Timer.scheduledTimer(withTimeInterval: 4, repeats: false) { _ in
+                        withAnimation {
+                            isLaunchScreenShowed = false
+                            BackgroundManager.shared.askPermission()
+                        }
+                    }
+                }
+                .onChange(of: scenePhase) { _, newValue in
+                    guard newValue == .background else { return }
+                    BackgroundManager.shared.startListenForCurrentOrders()
+                }
         }
     }
 }

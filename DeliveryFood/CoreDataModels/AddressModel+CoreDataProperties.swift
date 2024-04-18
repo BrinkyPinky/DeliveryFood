@@ -16,7 +16,8 @@ extension AddressModel {
         return NSFetchRequest<AddressModel>(entityName: "AddressModel")
     }
 
-    @NSManaged public var addressString: String?
+    @NSManaged public var addressName: String
+    @NSManaged public var addressDescription: String
     @NSManaged public var apartment: String?
     @NSManaged public var entranceway: String?
     @NSManaged public var floor: String?
@@ -24,6 +25,7 @@ extension AddressModel {
     @NSManaged public var latitude: Double
     @NSManaged public var longtitude: Double
     @NSManaged public var orderComment: String?
+    @NSManaged public var lastUsed: Date?
 
 }
 

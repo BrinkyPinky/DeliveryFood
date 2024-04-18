@@ -21,6 +21,7 @@ extension PositionForBillModel {
     @NSManaged public var price: Double
     @NSManaged public var amount: Int16
     @NSManaged public var timestamp: Date
+    @NSManaged public var referenceForItself: String
 
 }
 

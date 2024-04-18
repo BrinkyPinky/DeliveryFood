@@ -7,10 +7,10 @@
 
 import CoreData
 
-final class CoreDataManager: ObservableObject {
+final class BillCoreDataManager: ObservableObject {
     @Published var billPositions = [PositionForBillModel]()
     
-    static let shared = CoreDataManager()
+    static let shared = BillCoreDataManager()
     
     private let persistentContainer: NSPersistentContainer
     private let context: NSManagedObjectContext
@@ -25,7 +25,7 @@ final class CoreDataManager: ObservableObject {
         context = persistentContainer.viewContext
         
         do {
-            try fetchBillPositions()
+            try fetchData()
         } catch {
             print("Unresolved error \(error.localizedDescription)")
         }
@@ -51,6 +51,7 @@ final class CoreDataManager: ObservableObject {
                 newBillPosition.foodName = foodModel.name
                 newBillPosition.timestamp = Date()
                 newBillPosition.price = foodModel.price
+                newBillPosition.referenceForItself = foodModel.referenceForItself
             }
         } catch {
             throw CoreDataError.addError
@@ -58,7 +59,28 @@ final class CoreDataManager: ObservableObject {
         
         do {
             try saveContext()
-            try fetchBillPositions()
+            try fetchData()
+        } catch {
+            throw error
+        }
+    }
+    
+    /// Добавляет позиции в чек на основе предыдущего заказа
+    func addBillPositionsFromPreviousOrder(orderModel: PreviousOrderModel) throws {
+        orderModel.positions.forEach({
+            let newBillPosition = PositionForBillModel(context: context)
+            newBillPosition.foodID = $0.foodID
+            newBillPosition.amount = Int16($0.amount)
+            newBillPosition.foodName = $0.foodName
+            newBillPosition.timestamp = Date()
+            // Цену можно добавлять старую так как при заказе проверяется не изменились ли цены
+            newBillPosition.price = $0.price
+            newBillPosition.referenceForItself = $0.referenceForItself
+        })
+        
+        do {
+            try saveContext()
+            try fetchData()
         } catch {
             throw error
         }
@@ -74,10 +96,20 @@ final class CoreDataManager: ObservableObject {
         
         do {
             try saveContext()
-            try fetchBillPositions()
+            try fetchData()
         } catch {
             throw error
         }
+    }
+    
+    // Удаляет все позиции в чеке
+    func removeAllBillPositions() {
+        billPositions.forEach({ context.delete($0) })
+        
+        do {
+            try saveContext()
+            try fetchData()
+        } catch {}
     }
     
     /// Изменяет количество на конкретной позиции в чеке. Если значение 0, то удаляет позицию
@@ -93,14 +125,29 @@ final class CoreDataManager: ObservableObject {
         
         do {
             try saveContext()
-            try fetchBillPositions()
+            try fetchData()
+        } catch {
+            throw error
+        }
+    }
+    
+    // Обновляет цены на товары
+    func updatePrices(foodModels: [DetailFoodModel]) throws {
+        foodModels.forEach { foodModel in
+            let billPosition = billPositions.first(where: { $0.foodID == foodModel.foodID })
+            billPosition?.price = foodModel.price
+        }
+        
+        do {
+            try saveContext()
+            try fetchData()
         } catch {
             throw error
         }
     }
     
     /// Обновляет, загружает позиции в чеке
-    private func fetchBillPositions() throws {
+    private func fetchData() throws {
         let request = PositionForBillModel.fetchRequest()
         let descriptor = NSSortDescriptor(key: "timestamp", ascending: true)
         request.sortDescriptors = [descriptor]
@@ -114,7 +161,6 @@ final class CoreDataManager: ObservableObject {
     
     /// Сохраняет данные
     private func saveContext() throws {
-        let context = persistentContainer.viewContext
         if context.hasChanges {
             do {
                 try context.save()

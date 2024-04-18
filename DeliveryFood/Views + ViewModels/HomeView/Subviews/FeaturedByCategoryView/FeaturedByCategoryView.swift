@@ -28,6 +28,7 @@ struct FeaturedByCategoryView: View {
                                          text1: "rjwqijriqw",
                                          text2: "",
                                          text3: "",
+                                         referenceForItself: "",
                                          imageURL: "",
                                          ingredients: [],
                                          name: "wqrijjirwqirjiowqjoirjqwioj",
@@ -91,7 +92,8 @@ private let previewDetailFoodModel = DetailFoodModel(
     text1: "200gr / 430kcal",
     text2: "",
     text3: "",
-    imageURL: "gs://deliveryfood-db5c8.appspot.com/food/burgers/Chickenburger.png",
+    referenceForItself: "",
+    imageURL: "gs://deliveryfood-db5c8.appspot.com/food/snacks/Chicken nuggets.png",
     ingredients: [],
     name: "Chefburger ricececerqwqr",
     price: 1.20,
@@ -132,6 +134,8 @@ struct addToCartWithPriceButtonView: View {
                                 )
                             )
                     }
+                    .foregroundStyle(.black)
+                    .opacity(0.75)
                 }
             }
             .padding([.leading, .bottom], -16)

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct CategoryModel {
+struct CategoryModel: Decodable {
     let id: Int
     let url: String
     let name: String

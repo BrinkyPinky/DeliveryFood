@@ -10,16 +10,17 @@ import SwiftUI
 struct BillView: View {
     @StateObject private var viewModel = BillViewModel()
     @State private var editMode = EditMode.inactive
-    @ObservedObject private var coreDataManager: CoreDataManager
-    
-    init() {
-        self.coreDataManager = CoreDataManager.shared
-    }
+    @ObservedObject private var coreDataManager = BillCoreDataManager.shared
     
     var body: some View {
         VStack {
             //nav bar
-            CustomNavigationBarView(isLeafNeeded: true, isBackButtonNeeded: true, isCartButtonNeeded: false)
+            CustomNavigationBarView(
+                isLeafNeeded: true,
+                isBackButtonNeeded: true,
+                isCartButtonNeeded: false,
+                isUserProfileNeeded: true
+            )
                 .padding([.leading, .trailing], 32)
             List {
                 //Review и кнопка для редактирования чека
@@ -36,7 +37,7 @@ struct BillView: View {
                 .listRowSeparator(.hidden)
                 
                 //сумма и кнопка для оплаты
-                TotalPrice(viewModel: viewModel)
+                TotalPrice(viewModel: viewModel, isCartEmpty: coreDataManager.billPositions.isEmpty)
             }
             .listStyle(.plain)
             
@@ -44,7 +45,16 @@ struct BillView: View {
         .environment(\.editMode, $editMode)
         .navigationBarBackButtonHidden()
         .sheet(isPresented: $viewModel.isOrderConfirmViewPresented, content: {
-            OrderConfirmView()
+            OrderConfirmView(totalPrice: viewModel.totalPrice, isOrderConfirmPresented: $viewModel.isOrderConfirmViewPresented)
+        })
+        .errorMessageView(errorMessage: viewModel.errorMessage, isShowed: $viewModel.isErrorShowed)
+        .onAppear(perform: {
+            viewModel.updateTotalPrice()
+        })
+        .onChange(of: coreDataManager.billPositions, { _, _ in
+            withAnimation {
+                viewModel.updateTotalPrice()
+            }
         })
     }
 }
@@ -57,6 +67,7 @@ struct BillView: View {
 
 struct TotalPrice: View {
     @ObservedObject var viewModel: BillViewModel
+    var isCartEmpty: Bool
     
     var body: some View {
         HStack {
@@ -70,7 +81,7 @@ struct TotalPrice: View {
             Spacer()
             
             Button(action: {
-                viewModel.isOrderConfirmViewPresented = true
+                viewModel.continueOrderButtonAction(isCartEmpty: isCartEmpty)
             }, label: {
                 RoundedRectangle(cornerRadius: 10)
                     .stroke(lineWidth: 1)

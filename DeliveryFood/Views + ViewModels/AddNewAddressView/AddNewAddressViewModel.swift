@@ -12,7 +12,7 @@ import SwiftUI
 final class AddNewAddressViewModel: NSObject, CLLocationManagerDelegate, ObservableObject {
     private let manager = CLLocationManager()
     
-    //Анимация точки на карте
+    // Анимация точки на карте
     @Published var pointOnTheMapY: CGFloat = 0
     @Published var firstCircleWidth: CGFloat = 0
     @Published var secondCircleWidth: CGFloat = 0
@@ -20,17 +20,17 @@ final class AddNewAddressViewModel: NSObject, CLLocationManagerDelegate, Observa
     @Published var secondCircleOpacity: CGFloat = 0.6
     var PointAnimationTimer: Timer?
     
-    //Текущее местоположение карты
+    // Текущее местоположение карты
     @Published var userRegion = MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 55.75222, longitude: 37.61556),
         span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
     )
     
-    //Нужно ли обновить местоположение карты, допустим при запуске
-    //Или когда пользователь нажимает на кнопку, которая показывает его текущую локацию
+    // Нужно ли обновить местоположение карты, допустим при запуске
+    // Или когда пользователь нажимает на кнопку, которая показывает его текущую локацию
     var isNeedToUpdateMap = true
     
-    //MenuWithTextFields
+    // MenuWithTextFields
     @Published var addressText = ""
     @Published var entrancewayText = ""
     @Published var intercomNumberText = ""
@@ -41,19 +41,23 @@ final class AddNewAddressViewModel: NSObject, CLLocationManagerDelegate, Observa
     @Published var isShowedSearchView = false {
         didSet {
             guard isShowedSearchView == true else { return }
-            selectedAddress = SearchAddressModel(name: "", description: "", latitude: 0, longtitude: 0, kind: "other")
+            selectedAddress = nil
         }
     }
     
-    //Выбранный адрес
-    @Published var selectedAddress = SearchAddressModel(name: "", description: "", latitude: 0, longtitude: 0, kind: "other")
+    // Выбранный адрес
+    @Published var selectedAddress: SearchAddressModel?
+    // Заглушка если выбранного адреса нет
+    let plugSelectedAddress = SearchAddressModel(name: "", description: "", latitude: 0, longtitude: 0, kind: "other")
     
-    //Массив адресов которые нашлись
+    // Состояние идет ли поиск адресов
+    var isSearchingAddress = false
+    // Массив адресов которые нашлись
     @Published var searchAddressSuggestions: [SearchAddressModel] = []
     
     var loadCoordinateFromStringWorkItem: DispatchWorkItem?
     
-    //ErrorView
+    // ErrorView
     @Published var isErrorShowed = false
     var errorMessage = "Some Error"
     
@@ -72,7 +76,7 @@ final class AddNewAddressViewModel: NSObject, CLLocationManagerDelegate, Observa
     }
     
     // MARK: Animation
-    //Запустить анимацию точки на карте
+    // Запустить анимацию точки на карте
     func startPointOnTheMapAnimation() {
         guard PointAnimationTimer == nil else { return }
         
@@ -101,14 +105,14 @@ final class AddNewAddressViewModel: NSObject, CLLocationManagerDelegate, Observa
         PointAnimationTimer?.fire()
     }
     
-    //Остановить анимацию точки на карте
+    // Остановить анимацию точки на карте
     func stopPointOnTheMapAnimation() {
         PointAnimationTimer?.invalidate()
         PointAnimationTimer = nil
     }
     
     // MARK: Select Address From SearchAddressListView
-    //Устанавливает адрес в качестве выбранного пользователем
+    // Устанавливает адрес в качестве выбранного пользователем
     func selectAddress(addressModel: SearchAddressModel) {
         guard addressModel.kind == "house" else {
             showErrorWithString(AddNewAddressError.invalidAddress.localizedDescription)
@@ -123,8 +127,33 @@ final class AddNewAddressViewModel: NSObject, CLLocationManagerDelegate, Observa
         isNeedToUpdateMap = true
     }
     
+    // MARK: Save Address
+    
+    /// Сохраняет адрес
+    /// - Parameter completionSuccess: Вызывается если сохранение прошло успешно
+    func saveAddress(completionSuccess: () -> ()) {
+        guard let selectedAddress = selectedAddress else {
+            showErrorWithString(AddNewAddressError.saveIncorrectAdrressError.localizedDescription)
+            return
+        }
+        
+        do {
+            try AddressCoreDataManager.shared.addNewAddress(
+                searchAddressModel: selectedAddress,
+                entranceway: entrancewayText,
+                intercom: intercomNumberText,
+                floor: floorText,
+                apartment: apartmentText,
+                orderComment: orderCommentText
+            )
+            completionSuccess()
+        } catch {
+            showErrorWithString(error.localizedDescription)
+        }
+    }
+    
     // MARK: Address convertions
-    /// Получить адресс исходя из координат
+    // Получить адресс исходя из координат
     func getAddressFromCoordinate() {
         //Конвертируем координаты в строку
         let coordinates = "\(userRegion.center.longitude) \(userRegion.center.latitude)"
@@ -137,7 +166,7 @@ final class AddNewAddressViewModel: NSObject, CLLocationManagerDelegate, Observa
                 case .success(let addressModel):
                     //Если он вернулся значит точно не пустой поэтому Force Unwrap
                     self.addressText = addressModel.first!.name
-                    self.selectedAddress = addressModel.first!
+                    self.selectedAddress = addressModel.first
                 case .failure(let error):
                     guard let error = error as? AddNewAddressError else { return }
                     self.showErrorWithString(error.localizedDescription)
@@ -146,12 +175,16 @@ final class AddNewAddressViewModel: NSObject, CLLocationManagerDelegate, Observa
         }
     }
     
-    ///Получить адрес и координаты локации введенные пользователем вручную
+    // Получить адрес и координаты локации введенные пользователем вручную
     func getCoordinateFromString(_ text: String) {
         searchAddressSuggestions = []
         loadCoordinateFromStringWorkItem?.cancel()
+        isSearchingAddress = true
         
-        guard isShowedSearchView, !addressText.isEmpty else { return }
+        guard isShowedSearchView, !addressText.isEmpty else {
+            isSearchingAddress = false
+            return
+        }
         
         loadCoordinateFromStringWorkItem = DispatchWorkItem { [weak self] in
             guard let self = self else { return }
@@ -161,7 +194,9 @@ final class AddNewAddressViewModel: NSObject, CLLocationManagerDelegate, Observa
                         switch result {
                         case .success(let searchModel):
                             self.searchAddressSuggestions = searchModel
+                            self.isSearchingAddress = false
                         case .failure(let error):
+                            self.isSearchingAddress = false
                             guard let error = error as? AddNewAddressError else { return }
                             self.showErrorWithString(error.localizedDescription)
                         }

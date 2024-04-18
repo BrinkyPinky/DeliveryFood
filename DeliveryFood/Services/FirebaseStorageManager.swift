@@ -22,7 +22,7 @@ final class FirebaseStorageManager {
     ///   - completion: Возвращает либо Data либо Error
     func downloadImage(withURL url: String, completion: @escaping (Result<Data, Error>) -> Void) {
         guard (URL(string: url) != nil) else {
-            completion(.failure(FirebaseStorageError.getDataError))
+            completion(.failure(FirebaseFirestoreError.getDataError))
             return
         }
         

@@ -11,15 +11,15 @@ struct CustomNavigationBarView: View {
     let isLeafNeeded: Bool
     let isBackButtonNeeded: Bool
     let isCartButtonNeeded: Bool
+    let isUserProfileNeeded: Bool
+    
+    @State private var isAccountViewPresented = false
+    @State private var isLoginViewPresented = false
+    @State private var isBillViewPresented = false
+    
     @Environment(\.presentationMode) private var presentationMode
     
-    @StateObject private var coreDataManager = CoreDataManager.shared
-    
-    init(isLeafNeeded: Bool, isBackButtonNeeded: Bool, isCartButtonNeeded: Bool) {
-        self.isLeafNeeded = isLeafNeeded
-        self.isBackButtonNeeded = isBackButtonNeeded
-        self.isCartButtonNeeded = isCartButtonNeeded
-    }
+    @StateObject private var coreDataManager = BillCoreDataManager.shared
     
     var body: some View {
         HStack {
@@ -30,7 +30,7 @@ struct CustomNavigationBarView: View {
                     RoundedRectangle(cornerRadius: 10)
                         .frame(width: 40, height: 40)
                         .foregroundStyle(.background)
-                        .shadow(radius: 1)
+                        .shadow(color: .primary, radius: 1)
                         .overlay {
                             Image(systemName: "chevron.left")
                                 .font(.system(size: 14, weight: .semibold, design: .rounded))
@@ -41,9 +41,33 @@ struct CustomNavigationBarView: View {
             }
             LogotypeView(size: 32, isLeafNeeded: isLeafNeeded)
             Spacer()
+            if isUserProfileNeeded {
+                Button {
+                    if FirebaseAuthManager.shared.isUserLoggedIn() {
+                        isAccountViewPresented = true
+                    } else {
+                        isLoginViewPresented = true
+                    }
+                    
+                } label: {
+                        Image(systemName: "person")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 20)
+                            .fontWeight(.thin)
+                }
+                .sheet(isPresented: $isAccountViewPresented, content: {
+                    AccountView(billViewShouldBePresented: {
+                        isBillViewPresented = true
+                    })
+                })
+                .sheet(isPresented: $isLoginViewPresented, content: {
+                    AuthView()
+                })
+            }
             if isCartButtonNeeded {
-                NavigationLink {
-                    BillView()
+                Button {
+                    isBillViewPresented = true
                 } label: {
                     Image(systemName: "bag")
                         .resizable()
@@ -65,6 +89,10 @@ struct CustomNavigationBarView: View {
                             }
                         }
                 }
+                .padding(.leading, 16)
+                .navigationDestination(isPresented: $isBillViewPresented) {
+                    BillView()
+                }
             }
         }
     }
@@ -72,5 +100,5 @@ struct CustomNavigationBarView: View {
 
 
 #Preview {
-    CustomNavigationBarView(isLeafNeeded: false, isBackButtonNeeded: true, isCartButtonNeeded: true)
+    CustomNavigationBarView(isLeafNeeded: false, isBackButtonNeeded: true, isCartButtonNeeded: true, isUserProfileNeeded: true)
 }

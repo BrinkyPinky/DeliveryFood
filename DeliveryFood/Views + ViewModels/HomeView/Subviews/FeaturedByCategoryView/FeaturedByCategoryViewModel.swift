@@ -49,7 +49,7 @@ final class FeaturedByCategoryViewModel: ObservableObject {
                             self.animationMainTextOpacity = 1
                             
                             do {
-                                try CoreDataManager.shared.addBillPosition(foodModel: foodModel)
+                                try BillCoreDataManager.shared.addBillPosition(foodModel: foodModel)
                             } catch let error as CoreDataError {
                                 self.showError(error.localizedDescription)
                             } catch {
@@ -79,7 +79,7 @@ final class FeaturedByCategoryViewModel: ObservableObject {
                 self.foodImage = image
                 self.isImageLoading = false
             case .failure(let error):
-                if let error = error as? FirebaseStorageError {
+                if let error = error as? FirebaseFirestoreError {
                     self.showError(error.localizedDescription)
                 } else {
                     self.showError(error.localizedDescription)

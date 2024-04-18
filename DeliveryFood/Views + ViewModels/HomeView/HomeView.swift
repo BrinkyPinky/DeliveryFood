@@ -11,12 +11,13 @@ struct HomeView: View {
     @StateObject private var viewModel = HomeViewModel()
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack {
                 CustomNavigationBarView(
-                    isLeafNeeded: false,
+                    isLeafNeeded: true,
                     isBackButtonNeeded: false,
-                    isCartButtonNeeded: true
+                    isCartButtonNeeded: true,
+                    isUserProfileNeeded: true
                 )
                 .padding([.leading, .trailing], 32)
                 ScrollView(showsIndicators: false) {
@@ -91,6 +92,9 @@ struct HomeView: View {
         .toolbar(.hidden)
         .onAppear {
             viewModel.onAppearAction()
+        }
+        .onChange(of: viewModel.pickedCategoryID) { _, _ in
+            viewModel.loadFeaturedFood()
         }
     }
 }

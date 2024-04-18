@@ -15,7 +15,12 @@ struct DetailView: View {
     var body: some View {
         GeometryReader { geometryProxy in
             VStack {
-                CustomNavigationBarView(isLeafNeeded: true, isBackButtonNeeded: true, isCartButtonNeeded: true)
+                CustomNavigationBarView(
+                    isLeafNeeded: true,
+                    isBackButtonNeeded: true,
+                    isCartButtonNeeded: true,
+                    isUserProfileNeeded: true
+                )
                     .padding([.leading,.trailing], 32)
                 ZStack {
                     ScrollView(showsIndicators: false) {
@@ -24,7 +29,9 @@ struct DetailView: View {
                             
                             FoodMainInformationView(geometryProxy: geometryProxy, foodModel: foodModel, foodImage: $foodImage)
                             
-                            FoodIngredientsView(ingredients: foodModel.ingredients)
+                            if !foodModel.ingredients.isEmpty {
+                                FoodIngredientsView(ingredients: foodModel.ingredients)
+                            }
                             
                             Spacer()
                         }
@@ -50,8 +57,10 @@ struct DetailView: View {
             text1: "rwqojtiqwr tqw ",
             text2: "wqokjtiwq wqt",
             text3: "twoqj qwitij",
-            imageURL: "gs://deliveryfood-db5c8.appspot.com/food/burgers/Chefburger Junior.png",
-            ingredients: ["qwt", "twqtwqt", "qwtwqt", "qwtt tqw"],
+            referenceForItself: "",
+            imageURL: "gs://deliveryfood-db5c8.appspot.com/food/snacks/Chicken nuggets.png",
+                        ingredients: ["rqw", "rwqokrpwq", "rwqokrwqji", "rwqojirqw", "rqwjriowqj", "rqjwjroiqjwjrwqoiroiwqjoiorwq", "rqwjoiriowjqoirwq", "rijwqirwqiroqwji", "rqwpjriwqijiojrqwi", "rqworjqwiojoirqw", "wrq"],
+//            ingredients: [],
             name: "Tokwqtkoqtw",
             price: 2.50,
             foodID: "r12"
@@ -97,6 +106,8 @@ struct FoodIngredientsView: View {
             }
         }
         .padding([.leading,.trailing], 32)
+        // AddToOrder button size
+        .padding(.bottom, 100)
     }
 }
 
@@ -122,8 +133,7 @@ struct FoodMainInformationView: View {
             Image(uiImage: foodImage)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .padding(.trailing, -48)
-                .offset(x: 20, y: 0)
+                .offset(x: 50, y: 0)
         }
         .padding(.leading, 32)
         .frame(height: geometryProxy.size.height/3)
@@ -186,6 +196,8 @@ struct AddToOrderButtonView: View {
                                 .scaleEffect(viewModel.arrowScale)
                                 .offset(x: viewModel.arrowXOffset, y: 0)
                         }
+                        .foregroundStyle(.black)
+                        .opacity(0.75)
                 }
                 .padding([.leading,.trailing], 32)
         }

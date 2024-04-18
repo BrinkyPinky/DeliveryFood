@@ -21,14 +21,14 @@ final class HomeViewModel: ObservableObject {
     var isFeaturedFoodLoading = true
     
     func onAppearAction() {
-        FirebaseDatabaseManager.shared.getCategories { [weak self] result in
+        FirebaseFirestoreManager.shared.getCategories { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let categories):
                 self.categories = categories
                 self.isCategoriesLoading = false
             case .failure(let error):
-                if let error = error as? FirebaseDatabaseError {
+                if let error = error as? FirebaseFirestoreError {
                     self.showError(withMessage: error.localizedDescription)
                 } else {
                     self.showError(withMessage: error.localizedDescription)
@@ -36,16 +36,30 @@ final class HomeViewModel: ObservableObject {
             }
         }
         
-        FirebaseDatabaseManager.shared.getFoodByCategoryId(pickedCategoryID) { [weak self] result in
+        loadFeaturedFood()
+        
+        FirebaseAuthManager.shared.loginAutomatically { [weak self] error in
+            guard let self = self else { return }
+            guard let error = error as? AuthError else { return }
+            showError(withMessage: error.localizedDescription)
+        }
+    }
+    
+    func loadFeaturedFood() {
+        isFeaturedFoodLoading = true
+        featuredFood = []
+        
+        FirebaseFirestoreManager.shared.getFoodByCategoryId(pickedCategoryID) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let featuredFood):
                 self.featuredFood = featuredFood
                 self.isFeaturedFoodLoading = false
             case .failure(let error):
-                if let error = error as? FirebaseDatabaseError {
+                if let error = error as? FirebaseFirestoreError {
                     self.showError(withMessage: error.localizedDescription)
                 } else {
+                    print("\(Date()) \(error)")
                     self.showError(withMessage: error.localizedDescription)
                 }
             }

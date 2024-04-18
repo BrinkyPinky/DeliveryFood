@@ -34,7 +34,7 @@ final class DetailViewModel: ObservableObject {
                             arrowScale = 1
                             
                             do {
-                                try CoreDataManager.shared.addBillPosition(foodModel: foodModel)
+                                try BillCoreDataManager.shared.addBillPosition(foodModel: foodModel)
                             } catch let error as CoreDataError {
                                 errorMessage = error.localizedDescription
                                 isErrorShowed = true

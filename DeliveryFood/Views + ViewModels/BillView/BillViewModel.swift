@@ -16,15 +16,10 @@ final class BillViewModel: ObservableObject {
     @Published var totalPrice: Double = 0
     @Published var isOrderConfirmViewPresented = false
     
-    init() {
-           updateTotalPrice()
-       }
-    
     //Удалить позиции в чеке
     func deleteItem(at offsets: IndexSet) {
         do {
-            try CoreDataManager.shared.removeBillPosition(at: offsets)
-            updateTotalPrice()
+            try BillCoreDataManager.shared.removeBillPosition(at: offsets)
         } catch let error as CoreDataError {
             showError(withMessage: error.localizedDescription)
         } catch {
@@ -35,7 +30,7 @@ final class BillViewModel: ObservableObject {
     //Изменяет количество позиций в чеке
     func changeAmountOfBillPosition(positionModel: PositionForBillModel, toValue newValue: Int) {
         do {
-            try CoreDataManager.shared.changeAmountOfBillPosition(positionModel: positionModel, toValue: newValue)
+            try BillCoreDataManager.shared.changeAmountOfBillPosition(positionModel: positionModel, toValue: newValue)
             updateTotalPrice()
         } catch let error as CoreDataError {
             showError(withMessage: error.localizedDescription)
@@ -44,10 +39,25 @@ final class BillViewModel: ObservableObject {
         }
     }
     
+    // Действие при нажатии кнопки продолжить заказ
+    func continueOrderButtonAction(isCartEmpty: Bool) {
+        guard !isCartEmpty else {
+            showError(withMessage: "Add something to the cart")
+            return
+        }
+        
+        guard FirebaseAuthManager.shared.isUserLoggedIn() else {
+            showError(withMessage: "You must be logged in")
+            return
+        }
+        
+        isOrderConfirmViewPresented = true
+    }
+    
     //Обновляет общий счет
-    private func updateTotalPrice() {
+    func updateTotalPrice() {
         var totalBill: Double = 0
-        CoreDataManager.shared.billPositions.forEach( { totalBill += $0.price * Double($0.amount) } )
+        BillCoreDataManager.shared.billPositions.forEach( { totalBill += $0.price * Double($0.amount) } )
         self.totalPrice = totalBill
     }
     
