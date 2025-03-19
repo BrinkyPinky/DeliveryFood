@@ -5,17 +5,23 @@
 //  Created by BrinyPiny on 18.01.2024.
 //
 
-import SwiftUI
 import FirebaseCore
+import SwiftUI
 
 class AppDelegate: NSObject, UIApplicationDelegate {
-    func application(_ application: UIApplication,
-                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+    func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplication
+            .LaunchOptionsKey: Any]? = nil
+    ) -> Bool {
         FirebaseApp.configure()
         return true
     }
-    
-    func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+
+    func application(
+        _ application: UIApplication,
+        supportedInterfaceOrientationsFor window: UIWindow?
+    ) -> UIInterfaceOrientationMask {
         return .portrait
     }
 }
@@ -23,29 +29,33 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 @main
 struct DeliveryFoodApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-    @State private var isLaunchScreenShowed = true
     @Environment(\.scenePhase) private var scenePhase
-    
+
+    @StateObject private var viewModel = DeliveryFoodAppModel()
+
     var body: some Scene {
+
         WindowGroup {
-            HomeView()
-                .launchScreenViewModifier(isShowed: $isLaunchScreenShowed)
-                .onAppear {
-                    Timer.scheduledTimer(withTimeInterval: 4, repeats: false) { _ in
-                        withAnimation {
-                            isLaunchScreenShowed = false
-                            BackgroundManager.shared.askPermission()
-                        }
+            NavigationStack {
+                HomeView()
+            }
+            .launchScreenViewModifier(isShowed: $viewModel.isLaunchScreenShowed)
+            .onAppear {
+                Timer.scheduledTimer(withTimeInterval: 4, repeats: false) { _ in
+                    withAnimation {
+                        viewModel.isLaunchScreenShowed = false
                     }
+                    BackgroundManager.shared.askPermission()
                 }
-                .onChange(of: scenePhase) { _, newValue in
-                    guard newValue == .background else { return }
-                    BackgroundManager.shared.startListenForCurrentOrders()
-                }
+            }
+            .onChange(of: scenePhase) { _, newValue in
+                guard newValue == .background else { return }
+                BackgroundManager.shared.startListenForCurrentOrders()
+            }
+            .errorMessageView(errorMessage: viewModel.errorMessage, isShowed: $viewModel.isErrorShowed)
+            .onAppear {
+                viewModel.onAppearAction()
+            }
         }
     }
 }
-    
-    #Preview {
-        DeliveryFoodApp() as! any View
-    }

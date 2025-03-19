@@ -51,7 +51,7 @@ final class BillCoreDataManager: ObservableObject {
                 newBillPosition.foodName = foodModel.name
                 newBillPosition.timestamp = Date()
                 newBillPosition.price = foodModel.price
-                newBillPosition.referenceForItself = foodModel.referenceForItself
+                newBillPosition.referenceForItself = "Food/\(foodModel.foodID)"
             }
         } catch {
             throw CoreDataError.addError

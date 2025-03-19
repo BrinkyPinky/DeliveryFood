@@ -7,10 +7,10 @@
 
 import Foundation
 
-enum CoreDataError: Error {
+enum CoreDataError: Error, LocalizedError {
     case saveError, fetchError, addError, changeAmountError
     
-    var localizedDescription: String {
+    var errorDescription: String? {
         switch self {
         case .saveError: "There was an error with saving data.\nPlease report the bug."
         case .fetchError: "There was an error with retrieving data.\nPlease report the bug"

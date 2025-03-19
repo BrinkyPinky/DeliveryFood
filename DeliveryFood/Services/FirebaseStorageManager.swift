@@ -20,18 +20,15 @@ final class FirebaseStorageManager {
     /// - Parameters:
     ///   - url: Ссылка на изображение из сервера FireBase Storage
     ///   - completion: Возвращает либо Data либо Error
-    func downloadImage(withURL url: String, completion: @escaping (Result<Data, Error>) -> Void) {
-        guard (URL(string: url) != nil) else {
-            completion(.failure(FirebaseFirestoreError.getDataError))
-            return
-        }
+    func downloadImage(withPath path: String, completion: @escaping (Result<Data, Error>) -> Void) {
+        let path = path + ".png"
         
-        if let imageData = cache.object(forKey: NSString(string: url)) {
+        if let imageData = cache.object(forKey: NSString(string: path)) {
             completion(.success(imageData as Data))
             return
         }
         
-        let ref = storage.reference(forURL: url)
+        let ref = storage.reference(withPath: path)
         
         ref.getData(maxSize: 1024*1024) { data, error in
             guard let data = data else {
@@ -39,9 +36,32 @@ final class FirebaseStorageManager {
                 return
             }
             
-            self.cache.setObject(NSData(data: data), forKey: NSString(string: url))
+            self.cache.setObject(NSData(data: data), forKey: NSString(string: path))
             
             completion(.success(data))
+        }
+    }
+    
+    func uploadImage(withPath path: String, data: Data, completion: @escaping (Result<Any?, Error>) -> Void) {
+        let path = path + ".png"
+        storage.reference(withPath: path).putData(data) { _, error in
+            if let error = error {
+                completion(.failure(error))
+            } else {
+                completion(.success(nil))
+            }
+        }
+    }
+    
+    func removeImage(withPath path: String, completion: @escaping (Result<Any?, Error>) -> Void) {
+        let path = path + ".png"
+        
+        storage.reference(withPath: path).delete { error in
+            if let error = error {
+                completion(.failure(error))
+            } else {
+                completion(.success(nil))
+            }
         }
     }
 }

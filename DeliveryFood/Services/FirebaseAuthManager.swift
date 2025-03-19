@@ -10,6 +10,8 @@ import FirebaseAuth
 final class FirebaseAuthManager {
     static let shared = FirebaseAuthManager()
     
+    private let adminManager = FirebaseFirestoreAdminManager.shared
+    
     private let auth = Auth.auth()
     
     /// Регистрирует нового пользователя
@@ -36,25 +38,14 @@ final class FirebaseAuthManager {
     ///   - password: Пароль пользователя
     ///   - completion: Возвращает Result nil либо ошибку
     func login(withEmail email: String, password: String, completion: @escaping (Result<Any?, Error>) -> ()) {
-        auth.signIn(withEmail: email, password: password) { data, error in
+        auth.signIn(withEmail: email, password: password) { [unowned self] data, error in
             if let error = error {
                 completion(.failure(error))
             }
             
-            if data != nil {
+            if let data = data {
+                adminManager.checkIfUserIsAdmin(userID: data.user.uid)
                 completion(.success(nil))
-            }
-        }
-    }
-    
-    // Логин при входе в приложение
-    func loginAutomatically(completionFailure: @escaping (Error) -> ()) {
-        if let email = UserDefaults.standard.string(forKey: "email"),
-            let password = UserDefaults.standard.string(forKey: "password") {
-            auth.signIn(withEmail: email, password: password) { _, error in
-                if error != nil {
-                    completionFailure(AuthError.failedToLoginAutomatically)
-                }
             }
         }
     }
@@ -77,7 +68,7 @@ final class FirebaseAuthManager {
     func logOut(completion: @escaping (Result<Any?, Error>) -> ()) {
         do {
             try auth.signOut()
-            removeUsersSavedEmailAndPassword()
+            adminManager.notAdminAnymore()
             completion(.success(nil))
         } catch {
             completion(.failure(error))
@@ -103,17 +94,5 @@ final class FirebaseAuthManager {
         if let user = auth.currentUser {
             user.delete()
         }
-    }
-    
-    // Сохранить почту и пароль для входа
-    func saveUsersEmailAndPassword(email: String, password: String) {
-        UserDefaults.standard.set(email, forKey: "email")
-        UserDefaults.standard.set(password, forKey: "password")
-    }
-    
-    // Удалить сохраненные данные о почте и пароле
-    private func removeUsersSavedEmailAndPassword() {
-        UserDefaults.standard.removeObject(forKey: "email")
-        UserDefaults.standard.removeObject(forKey: "password")
     }
 }

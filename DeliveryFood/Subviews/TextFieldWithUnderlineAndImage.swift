@@ -19,7 +19,7 @@ struct TextFieldWithUnderlineAndImage: View {
                 .overlay {
                     HStack {
                         Text(placeholder)
-                            .foregroundStyle(.placeholder)
+                            .foregroundStyle(.secondary)
                             .offset(y: text == "" ? 0 : -18)
                             .font(text == "" ? .callout : .caption)
                         Spacer()

@@ -5,13 +5,15 @@
 //  Created by BrinyPiny on 02.04.2024.
 //
 
-enum FirebaseFirestoreError: Error {
+import Foundation
+
+enum FirebaseFirestoreError: Error, LocalizedError {
     case getDataError, dataProcessingError
     
-    var localizedDescription: String {
+    var errorDescription: String? {
         switch self {
-        case .getDataError: "An error occurred while downloading data.\nPlease report the bug."
-        case .dataProcessingError: "Unable to process data.\nPlease report the bug."
+        case .getDataError: return "An error occurred while downloading data.\nPlease report the bug."
+        case .dataProcessingError: return "Unable to process data.\nPlease report the bug."
         }
     }
 }

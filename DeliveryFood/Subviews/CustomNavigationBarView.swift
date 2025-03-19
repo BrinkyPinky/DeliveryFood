@@ -12,15 +12,25 @@ struct CustomNavigationBarView: View {
     let isBackButtonNeeded: Bool
     let isCartButtonNeeded: Bool
     let isUserProfileNeeded: Bool
-    
+
     @State private var isAccountViewPresented = false
     @State private var isLoginViewPresented = false
     @State private var isBillViewPresented = false
-    
+
     @Environment(\.presentationMode) private var presentationMode
-    
+
     @StateObject private var coreDataManager = BillCoreDataManager.shared
-    
+
+    init(
+        isLeafNeeded: Bool, isBackButtonNeeded: Bool, isCartButtonNeeded: Bool,
+        isUserProfileNeeded: Bool
+    ) {
+        self.isLeafNeeded = isLeafNeeded
+        self.isBackButtonNeeded = isBackButtonNeeded
+        self.isCartButtonNeeded = isCartButtonNeeded
+        self.isUserProfileNeeded = isUserProfileNeeded
+    }
+
     var body: some View {
         HStack {
             if isBackButtonNeeded {
@@ -33,7 +43,10 @@ struct CustomNavigationBarView: View {
                         .shadow(color: .primary, radius: 1)
                         .overlay {
                             Image(systemName: "chevron.left")
-                                .font(.system(size: 14, weight: .semibold, design: .rounded))
+                                .font(
+                                    .system(
+                                        size: 14, weight: .semibold,
+                                        design: .rounded))
                         }
                         .padding(.trailing, 8)
                 }
@@ -41,6 +54,21 @@ struct CustomNavigationBarView: View {
             }
             LogotypeView(size: 32, isLeafNeeded: isLeafNeeded)
             Spacer()
+            if FirebaseFirestoreAdminManager.shared.isAdmin {
+                NavigationLink {
+                    AdminDashboardView()
+                } label: {
+                        Text("Admin")
+                            .foregroundStyle(.white)
+                            .bold()
+                            .padding(8)
+                            .background {
+                                RoundedRectangle(cornerRadius: 20)
+                                    .foregroundStyle(Color(red: 106 / 255, green: 82 / 255, blue: 239 / 255))
+                            }
+                            .padding(.horizontal)
+                }
+            }
             if isUserProfileNeeded {
                 Button {
                     if FirebaseAuthManager.shared.isUserLoggedIn() {
@@ -48,22 +76,27 @@ struct CustomNavigationBarView: View {
                     } else {
                         isLoginViewPresented = true
                     }
-                    
+
                 } label: {
-                        Image(systemName: "person")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 20)
-                            .fontWeight(.thin)
+                    Image(systemName: "person")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 20)
+                        .fontWeight(.thin)
                 }
-                .sheet(isPresented: $isAccountViewPresented, content: {
-                    AccountView(billViewShouldBePresented: {
-                        isBillViewPresented = true
+                .sheet(
+                    isPresented: $isAccountViewPresented,
+                    content: {
+                        AccountView(billViewShouldBePresented: {
+                            isBillViewPresented = true
+                        })
+                    }
+                )
+                .sheet(
+                    isPresented: $isLoginViewPresented,
+                    content: {
+                        AuthView()
                     })
-                })
-                .sheet(isPresented: $isLoginViewPresented, content: {
-                    AuthView()
-                })
             }
             if isCartButtonNeeded {
                 Button {
@@ -80,11 +113,15 @@ struct CustomNavigationBarView: View {
                                         .foregroundStyle(Color.red)
                                         .frame(width: 25, height: 25)
                                         .overlay {
-                                            Text("\(coreDataManager.billPositions.count)")
-                                                .foregroundStyle(.white)
-                                                .fontWidth(.compressed)
+                                            Text(
+                                                "\(coreDataManager.billPositions.count)"
+                                            )
+                                            .foregroundStyle(.white)
+                                            .fontWidth(.compressed)
                                         }
-                                        .offset(x: geometry.size.width/2, y: -geometry.size.height/4)
+                                        .offset(
+                                            x: geometry.size.width / 2,
+                                            y: -geometry.size.height / 4)
                                 })
                             }
                         }
@@ -98,7 +135,8 @@ struct CustomNavigationBarView: View {
     }
 }
 
-
 #Preview {
-    CustomNavigationBarView(isLeafNeeded: false, isBackButtonNeeded: true, isCartButtonNeeded: true, isUserProfileNeeded: true)
+    CustomNavigationBarView(
+        isLeafNeeded: true, isBackButtonNeeded: true, isCartButtonNeeded: true,
+        isUserProfileNeeded: true)
 }

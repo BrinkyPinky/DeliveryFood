@@ -7,11 +7,11 @@
 
 import Foundation
 
-enum AddNewAddressError: Error {
+enum AddNewAddressError: Error, LocalizedError {
     case geopositionAccessError, unknownError, undeliverable, gettingDataError, JSONDataProcessingError, invalidAddress
     case saveIncorrectAdrressError
     
-    var localizedDescription: String {
+    var errorDescription: String? {
         switch self {
         case .geopositionAccessError: "You need to grant access to your location in the settings."
         case .unknownError: "Something went wrong."

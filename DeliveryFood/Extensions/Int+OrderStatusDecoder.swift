@@ -1,15 +1,15 @@
 //
-//  OrderStatusDecoder.swift
+//  Int+OrderStatusDecoder.swift
 //  DeliveryFood
 //
-//  Created by BrinyPiny on 16.04.2024.
+//  Created by BrinyPiny on 14.03.2025.
 //
 
 import Foundation
 
-final class OrderStatusDecoder {
-    func decode(_ orderStatus: Int) -> String {
-        switch orderStatus {
+extension Int {
+    func orderStatusDecode() -> String {
+        switch self {
         case -1: return "Canceled"
         case 0: return "Ordered"
         case 1: return "Accepted"
@@ -20,5 +20,3 @@ final class OrderStatusDecoder {
         }
     }
 }
-
-OrderStatusDecoder().decode(1)

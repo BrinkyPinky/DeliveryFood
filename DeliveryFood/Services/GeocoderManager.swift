@@ -23,11 +23,11 @@ final class GeocoderManager {
         //Если поиск по координатам то отбираем только адреса с номером дома
         if isByCoordinates {
             url = URL(
-                string: "https://geocode-maps.yandex.ru/1.x/?apikey=b639b727-6044-41f6-89a5-0cb221da4d40" +
+                string: "https://geocode-maps.yandex.ru/1.x/?apikey=909952b1-fb53-46e9-a2f6-5545d459f0ec" +
                 "&geocode=\(addressOrCoordinates)&kind=house&format=json")
         } else {
             url = URL(
-                string: "https://geocode-maps.yandex.ru/1.x/?apikey=b639b727-6044-41f6-89a5-0cb221da4d40" +
+                string: "https://geocode-maps.yandex.ru/1.x/?apikey=909952b1-fb53-46e9-a2f6-5545d459f0ec" +
                 "&geocode=\(addressOrCoordinates)&format=json")
         }
         

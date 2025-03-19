@@ -7,10 +7,10 @@
 
 import Foundation
 
-enum AuthError: Error {
+enum AuthError: Error, LocalizedError {
     case invalidPhoneNumber, nameIsEmpty, failedToLoginAutomatically, failedToGetUserID
     
-    var localizedDescription: String {
+    var errorDescription: String? {
         switch self {
         case .invalidPhoneNumber: "Phone number is wrong formatted"
         case .nameIsEmpty: "Name must be provided"

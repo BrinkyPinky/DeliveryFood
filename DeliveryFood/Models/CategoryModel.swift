@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct CategoryModel: Decodable {
-    let id: Int
-    let url: String
-    let name: String
+struct CategoryModel: Decodable, Encodable, Hashable {
+    var id: String
+    var name: String
+    var order: Int
 }
