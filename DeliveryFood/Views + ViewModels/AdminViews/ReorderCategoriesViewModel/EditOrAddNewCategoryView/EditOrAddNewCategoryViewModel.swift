@@ -9,9 +9,12 @@ import Foundation
 import SwiftUI
 
 final class EditOrAddNewCategoryViewModel: ObservableObject {
-    @Published var image = UIImage()
     @Published var categoryName = ""
+    
+    // Image Picker
     @Published var isImagePickerPresented = false
+    @Published var image = UIImage()
+    @Published var isImageWasPicked = false
     
     @Published var isDataUploading = false
 
@@ -80,7 +83,7 @@ final class EditOrAddNewCategoryViewModel: ObservableObject {
         
         categoryModel.name = categoryName
         
-        FirebaseFirestoreAdminManager.shared.uploadNewOrChangeExistingCategory(category: categoryModel, imageData: pngData) { [weak self] result in
+        FirebaseFirestoreAdminManager.shared.uploadNewOrChangeExistingCategory(category: categoryModel, image: image, isNeedToUploadPhoto: isImageWasPicked) { [weak self] result in
             guard let self = self else { return }
             
             switch result {

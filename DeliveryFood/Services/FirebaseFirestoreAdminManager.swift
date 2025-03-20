@@ -7,6 +7,7 @@
 
 import FirebaseFirestore
 import Foundation
+import UIKit.UIImage
 
 final class FirebaseFirestoreAdminManager: ObservableObject {
     static let shared = FirebaseFirestoreAdminManager()
@@ -36,23 +37,31 @@ final class FirebaseFirestoreAdminManager: ObservableObject {
     func removeListeners() {
         ordersListener?.remove()
     }
-    
-    func uploadReorderedCategoriesOnServer(categories: [CategoryModel], completion: @escaping (Result<Any?, Error>) -> ()) {
+
+    func uploadReorderedCategoriesOnServer(
+        categories: [CategoryModel],
+        completion: @escaping (Result<Any?, Error>) -> Void
+    ) {
         db.runTransaction { [unowned self] transaction, _ in
             categories.forEach { categoryModel in
-                
+
                 do {
                     let data = try JSONEncoder().encode(categoryModel)
                     let jsonData = try JSONSerialization.jsonObject(with: data)
-                    
-                    guard let jsonData = jsonData as? [String: Any] else { return }
-                    
-                    transaction.setData(jsonData, forDocument: db.document("Categories/\(categoryModel.id)"))
+
+                    guard let jsonData = jsonData as? [String: Any] else {
+                        return
+                    }
+
+                    transaction.setData(
+                        jsonData,
+                        forDocument: db.document(
+                            "Categories/\(categoryModel.id)"))
                 } catch {
                     completion(.failure(AdminError.uploadOnServerError))
                 }
             }
-            
+
             return nil
         } completion: { _, error in
             if let error = error {
@@ -62,23 +71,30 @@ final class FirebaseFirestoreAdminManager: ObservableObject {
             }
         }
     }
-    
-    func uploadReorderedFoodOnServer(food: [DetailFoodModel], completion: @escaping (Result<Any?, Error>) -> ()) {
+
+    func uploadReorderedFoodOnServer(
+        food: [DetailFoodModel],
+        completion: @escaping (Result<Any?, Error>) -> Void
+    ) {
         db.runTransaction { [unowned self] transaction, _ in
             food.forEach { foodModel in
-                
+
                 do {
                     let data = try JSONEncoder().encode(foodModel)
                     let jsonData = try JSONSerialization.jsonObject(with: data)
-                    
-                    guard let jsonData = jsonData as? [String: Any] else { return }
-                    
-                    transaction.setData(jsonData, forDocument: db.document("Food/\(foodModel.foodID)"))
+
+                    guard let jsonData = jsonData as? [String: Any] else {
+                        return
+                    }
+
+                    transaction.setData(
+                        jsonData,
+                        forDocument: db.document("Food/\(foodModel.foodID)"))
                 } catch {
                     completion(.failure(AdminError.uploadOnServerError))
                 }
             }
-            
+
             return nil
         } completion: { _, error in
             if let error = error {
@@ -88,32 +104,43 @@ final class FirebaseFirestoreAdminManager: ObservableObject {
             }
         }
     }
-    
-    func uploadOrUpdate(foodModel: DetailFoodModel, imageData: Data, completion: @escaping (Result<Any?, Error>) -> ()) {
+
+    func uploadOrUpdateFoodModel(
+        foodModel: DetailFoodModel, image: UIImage, isNeedToUploadPhoto: Bool,
+        completion: @escaping (Result<Any?, Error>) -> Void
+    ) {
         var foodModel = foodModel
-        
+
         if foodModel.foodID.isEmpty {
             foodModel.foodID = db.collection("food").document().documentID
         }
-        
+
         let imagePath = "food/\(foodModel.foodID)"
-        
+
         do {
             let jsonData = try JSONEncoder().encode(foodModel)
-            let data = try JSONSerialization.jsonObject(with: jsonData) as? [String: Any]
-            
+            let data =
+                try JSONSerialization.jsonObject(with: jsonData)
+                as? [String: Any]
+
             guard let data = data else {
                 completion(.failure(AdminError.JSONEncoderError))
                 return
             }
-            
+
             db.document("Food/\(foodModel.foodID)").setData(data) { error in
                 if let error = error {
                     completion(.failure(error))
                 } else {
-                    FirebaseStorageManager.shared.uploadImage(withPath: imagePath, data: imageData) { [unowned self] result in
+                    guard isNeedToUploadPhoto else {
+                        completion(.success(nil))
+                        return
+                    }
+                    FirebaseStorageManager.shared.uploadImage(
+                        withPath: imagePath, image: image
+                    ) { [unowned self] result in
                         switch result {
-                        case .success(let success):
+                        case .success(_):
                             completion(.success(nil))
                         case .failure(let failure):
                             completion(.failure(failure))
@@ -126,15 +153,18 @@ final class FirebaseFirestoreAdminManager: ObservableObject {
             completion(.failure(AdminError.JSONEncoderError))
         }
     }
-    
+
     enum typeToRemove {
         case category, food
     }
-    
-    func removeCategoryOrFood(typeToRemove: typeToRemove, id: String, completion: @escaping (Result<Any?, Error>) -> Void) {
+
+    func removeCategoryOrFood(
+        typeToRemove: typeToRemove, id: String,
+        completion: @escaping (Result<Any?, Error>) -> Void
+    ) {
         var imagePath = ""
         var docPath = ""
-        
+
         switch typeToRemove {
         case .category:
             docPath = "Categories/\(id)"
@@ -143,14 +173,15 @@ final class FirebaseFirestoreAdminManager: ObservableObject {
             docPath = "Food/\(id)"
             imagePath = "food/\(id)"
         }
-        
+
         db.document(docPath).delete { error in
             if let error = error {
                 completion(.failure(error))
             } else {
-                FirebaseStorageManager.shared.removeImage(withPath: imagePath) { result in
+                FirebaseStorageManager.shared.removeImage(withPath: imagePath) {
+                    result in
                     switch result {
-                    case .success(let success):
+                    case .success(_):
                         completion(.success(nil))
                     case .failure(let failure):
                         completion(.failure(failure))
@@ -159,32 +190,44 @@ final class FirebaseFirestoreAdminManager: ObservableObject {
             }
         }
     }
-    
-    func uploadNewOrChangeExistingCategory(category: CategoryModel, imageData: Data, completion: @escaping (Result<Any?, Error>) -> ()) {
+
+    func uploadNewOrChangeExistingCategory(
+        category: CategoryModel, image: UIImage, isNeedToUploadPhoto: Bool,
+        completion: @escaping (Result<Any?, Error>) -> Void
+    ) {
         var category = category
-        
+
         if category.id.isEmpty {
             category.id = db.collection("categories").document().documentID
         }
-        
+
         let imagePath = "categories/\(category.id)"
-        
+
         do {
             let jsonData = try JSONEncoder().encode(category)
-            let data = try JSONSerialization.jsonObject(with: jsonData) as? [String: Any]
-            
+            let data =
+                try JSONSerialization.jsonObject(with: jsonData)
+                as? [String: Any]
+
             guard let data = data else {
                 completion(.failure(AdminError.JSONEncoderError))
                 return
             }
-            
+
             // Записываем новую категорию в FireStore
             db.document("Categories/\(category.id)").setData(data) { error in
                 if let error = error {
                     completion(.failure(error))
                 } else {
+                    guard isNeedToUploadPhoto else {
+                        completion(.success(nil))
+                        return
+                    }
+
                     // Загружаем фотографию
-                    FirebaseStorageManager.shared.uploadImage(withPath: imagePath, data: imageData) { [unowned self] result in
+                    FirebaseStorageManager.shared.uploadImage(
+                        withPath: imagePath, image: image
+                    ) { [unowned self] result in
                         switch result {
                         case .success(_):
                             completion(.success(nil))
@@ -269,4 +312,3 @@ final class FirebaseFirestoreAdminManager: ObservableObject {
         }
     }
 }
-

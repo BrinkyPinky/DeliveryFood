@@ -8,7 +8,7 @@
 import Foundation
 
 enum AdminError: Error, LocalizedError {
-    case getUserDataError, JSONEncoderError, updateNewOrderStatusError, uploadOnServerError, imageConvertError, unfilledFieldsError
+    case getUserDataError, JSONEncoderError, updateNewOrderStatusError, uploadOnServerError, imageConvertError, unfilledFieldsError, imageCompressingError
     
     var errorDescription: String? {
         switch self {
@@ -18,6 +18,7 @@ enum AdminError: Error, LocalizedError {
         case .uploadOnServerError: return "Failed to upload data on server"
         case .imageConvertError: return "Failed to convert the photo to the desired format"
         case .unfilledFieldsError: return "The fields must be filled in"
+        case .imageCompressingError: return "Failed to compress the image"
         }
     }
 }

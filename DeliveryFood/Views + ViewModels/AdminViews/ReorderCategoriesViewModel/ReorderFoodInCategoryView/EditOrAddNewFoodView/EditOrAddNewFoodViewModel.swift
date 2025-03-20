@@ -9,8 +9,10 @@ import Foundation
 import UIKit.UIImage
 
 final class EditOrAddNewFoodViewModel: ObservableObject {
+    // Image picker
     @Published var image = UIImage()
     @Published var isImagePickerPresented = false
+    @Published var isImageWasPicked = false
 
     @Published var isDataUploading = false
 
@@ -130,15 +132,13 @@ final class EditOrAddNewFoodViewModel: ObservableObject {
     }
 
     func uploadFoodOnServer() {
-        guard !isDataUploading else { return }
-        isDataUploading = true
-
-        guard let pngData = image.pngData() else {
-            showErrorWithMessage(
-                AdminError.imageConvertError.localizedDescription)
-            isDataUploading = false
+        guard image != UIImage() else {
+            showErrorWithMessage("Please provide the image")
             return
         }
+        
+        guard !isDataUploading else { return }
+        isDataUploading = true
 
         foodModel.heading1 = heading1
         foodModel.heading2 = heading2
@@ -151,8 +151,8 @@ final class EditOrAddNewFoodViewModel: ObservableObject {
         foodModel.price = price
         foodModel.categoryID = pickedCategory
 
-        FirebaseFirestoreAdminManager.shared.uploadOrUpdate(
-            foodModel: foodModel, imageData: pngData
+        FirebaseFirestoreAdminManager.shared.uploadOrUpdateFoodModel(
+            foodModel: foodModel, image: image, isNeedToUploadPhoto: isImageWasPicked
         ) { [weak self] result in
             guard let self = self else { return }
 

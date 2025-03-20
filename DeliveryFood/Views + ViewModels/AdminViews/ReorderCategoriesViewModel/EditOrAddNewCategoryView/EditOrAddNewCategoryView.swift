@@ -55,7 +55,7 @@ struct EditOrAddNewCategoryView: View {
                         Spacer()
                         PickImageView(image: $viewModel.image, isImagePickerPresented: $viewModel.isImagePickerPresented)
                             .sheet(isPresented: $viewModel.isImagePickerPresented) {
-                                ImagePicker(image: $viewModel.image)
+                                ImagePicker(image: $viewModel.image, imageWasPicked: $viewModel.isImageWasPicked)
                             }
                         Spacer()
                     }

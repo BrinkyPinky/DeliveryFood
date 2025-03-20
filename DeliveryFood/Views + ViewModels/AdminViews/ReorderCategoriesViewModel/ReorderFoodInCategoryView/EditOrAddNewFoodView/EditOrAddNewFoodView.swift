@@ -86,7 +86,7 @@ struct EditOrAddNewFoodView: View {
                             .sheet(
                                 isPresented: $viewModel.isImagePickerPresented
                             ) {
-                                ImagePicker(image: $viewModel.image)
+                                ImagePicker(image: $viewModel.image, imageWasPicked: $viewModel.isImageWasPicked)
                             }
                             Spacer()
                         }

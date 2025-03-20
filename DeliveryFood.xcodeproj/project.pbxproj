@@ -26,6 +26,7 @@
 		6848B0F42BC1FD260093FC81 /* AddressSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6848B0F32BC1FD260093FC81 /* AddressSelectionView.swift */; };
 		6848B0F62BC1FD3B0093FC81 /* OrderConfirmView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6848B0F52BC1FD3B0093FC81 /* OrderConfirmView.swift */; };
 		6848B0F82BC1FD4A0093FC81 /* OrderConfirmViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6848B0F72BC1FD4A0093FC81 /* OrderConfirmViewModel.swift */; };
+		685B7A972D8BF5EC009F9922 /* UIImage+CompressPNGData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 685B7A962D8BF5EC009F9922 /* UIImage+CompressPNGData.swift */; };
 		686602AA2BC3038F009C9EB8 /* AddressModel+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 686602A82BC3038F009C9EB8 /* AddressModel+CoreDataClass.swift */; };
 		686602AB2BC3038F009C9EB8 /* AddressModel+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 686602A92BC3038F009C9EB8 /* AddressModel+CoreDataProperties.swift */; };
 		686602AD2BC30736009C9EB8 /* SearchAddressModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 686602AC2BC30736009C9EB8 /* SearchAddressModel.swift */; };
@@ -124,6 +125,7 @@
 		6848B0F32BC1FD260093FC81 /* AddressSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressSelectionView.swift; sourceTree = "<group>"; };
 		6848B0F52BC1FD3B0093FC81 /* OrderConfirmView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderConfirmView.swift; sourceTree = "<group>"; };
 		6848B0F72BC1FD4A0093FC81 /* OrderConfirmViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderConfirmViewModel.swift; sourceTree = "<group>"; };
+		685B7A962D8BF5EC009F9922 /* UIImage+CompressPNGData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+CompressPNGData.swift"; sourceTree = "<group>"; };
 		686602A82BC3038F009C9EB8 /* AddressModel+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AddressModel+CoreDataClass.swift"; sourceTree = "<group>"; };
 		686602A92BC3038F009C9EB8 /* AddressModel+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AddressModel+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		686602AC2BC30736009C9EB8 /* SearchAddressModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchAddressModel.swift; sourceTree = "<group>"; };
@@ -289,6 +291,7 @@
 			children = (
 				688E861C2BCE6A51007D2E33 /* String+PhoneValidator.swift */,
 				68D8D67B2D844754006694B8 /* Int+OrderStatusDecoder.swift */,
+				685B7A962D8BF5EC009F9922 /* UIImage+CompressPNGData.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -689,6 +692,7 @@
 				68DAF7592D7DDF95002C84CC /* AdminDashboardView.swift in Sources */,
 				68DBFB042BCC5A6F0081BC3E /* PreviousOrderModel.swift in Sources */,
 				689B12DE2B5BD62D00F7FB7B /* FirebaseFirestoreUserManager.swift in Sources */,
+				685B7A972D8BF5EC009F9922 /* UIImage+CompressPNGData.swift in Sources */,
 				68AC65A92BC6A52400CFFA43 /* CustomTextFieldForAddressInputView.swift in Sources */,
 				68B50BDD2BB9807900EFE2B0 /* Model.xcdatamodeld in Sources */,
 				68DB1E822D8ACD03008FC4E2 /* PickImageView.swift in Sources */,
